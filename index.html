@@ -11,7 +11,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0a0a0f;--s1:#111118;--s2:#18181f;--bd:#252530;--t1:#f0f0f8;--t2:#8888a0;--t3:#404055;--pink:#ff5fa0;--teal:#00d4aa;--amber:#f5a623;--blue:#4f8fff;--purple:#9f6fff;--red:#ff4f4f;--green:#3dd68c}
-body{background:var(--bg);color:var(--t1);font-family:system-ui,-apple-system,sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body{background:var(--bg);color:var(--t1);font-family:system-ui,-apple-system,sans-serif;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
 a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;border:none;background:none}
 nav{height:54px;display:flex;align-items:center;padding:0 16px;justify-content:space-between;background:rgba(10,10,15,.97);border-bottom:1px solid var(--bd);flex-shrink:0;z-index:50}
 .logo{display:flex;align-items:center;gap:9px;cursor:pointer}
@@ -24,9 +24,9 @@ nav{height:54px;display:flex;align-items:center;padding:0 16px;justify-content:s
 #sinp{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:11px 15px;font-size:14px;color:var(--t1);outline:none;font-family:inherit}
 #sinp::placeholder{color:var(--t3)}
 .sx{color:var(--t2);font-size:12px;font-weight:700;padding:4px 2px}
-.scrl{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-.page{display:none;padding-bottom:80px}.page.on{display:block}
-.tabs{display:flex;background:rgba(10,10,15,.98);border-top:1px solid var(--bd);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0)}
+.scrl{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:70px}
+.page{display:none;padding-bottom:80px}.page.on{display:block}.page.on{display:block}
+.tabs{display:flex;background:rgba(10,10,15,.98);border-top:1px solid var(--bd);flex-shrink:0;position:fixed;bottom:0;left:0;right:0;z-index:100;padding-bottom:env(safe-area-inset-bottom,0)}
 .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px 8px;color:var(--t3);font-size:8px;font-weight:700}
 .tab .ti{font-size:18px;line-height:1}.tab.on{color:var(--t1)}
 .hero{position:relative;min-height:300px;overflow:hidden}
