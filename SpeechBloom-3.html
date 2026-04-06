@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SpeechBloom">
+<title>SpeechBloom</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0a0a0f;--s1:#111118;--s2:#18181f;--bd:#252530;--t1:#f0f0f8;--t2:#8888a0;--t3:#404055;--pink:#ff5fa0;--teal:#00d4aa;--amber:#f5a623;--blue:#4f8fff;--purple:#9f6fff;--red:#ff4f4f;--green:#3dd68c}
+body{background:var(--bg);color:var(--t1);font-family:system-ui,-apple-system,sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;border:none;background:none}
+nav{height:54px;display:flex;align-items:center;padding:0 16px;justify-content:space-between;background:rgba(10,10,15,.97);border-bottom:1px solid var(--bd);flex-shrink:0;z-index:50}
+.logo{display:flex;align-items:center;gap:9px;cursor:pointer}
+.brand{font-weight:900;font-size:19px;letter-spacing:2.5px;background:linear-gradient(135deg,var(--pink),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-r{display:flex;gap:4px;align-items:center}
+.ibtn{padding:8px;color:var(--t2);font-size:19px;border-radius:8px}
+#btnBack{display:none;border:1px solid rgba(0,212,170,.3);border-radius:20px;padding:5px 14px;color:var(--teal);font-size:11px;font-weight:700}
+#sbar{display:none;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--bd);gap:9px;align-items:center;flex-shrink:0}
+#sbar.on{display:flex}
+#sinp{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:11px 15px;font-size:14px;color:var(--t1);outline:none;font-family:inherit}
+#sinp::placeholder{color:var(--t3)}
+.sx{color:var(--t2);font-size:12px;font-weight:700;padding:4px 2px}
+.scrl{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.page{display:none;padding-bottom:80px}.page.on{display:block}
+.tabs{display:flex;background:rgba(10,10,15,.98);border-top:1px solid var(--bd);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0)}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px 8px;color:var(--t3);font-size:8px;font-weight:700}
+.tab .ti{font-size:18px;line-height:1}.tab.on{color:var(--t1)}
+.hero{position:relative;min-height:300px;overflow:hidden}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse at 75% 25%,rgba(255,95,160,.28),transparent 55%),radial-gradient(ellipse at 20% 75%,rgba(0,212,170,.2),transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(79,143,255,.12),transparent 65%),var(--bg)}
+.hf1{position:absolute;inset:0;background:linear-gradient(to top,var(--bg) 0%,transparent 55%)}
+.hf2{position:absolute;inset:0;background:linear-gradient(to right,rgba(10,10,15,.92),transparent 65%)}
+.hcnt{position:absolute;top:0;left:0;right:0;bottom:0;padding:18px 18px 20px;display:flex;flex-direction:column;justify-content:flex-end}
+.hey{font-size:9px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--pink);margin-bottom:6px}
+.hh{font-size:clamp(22px,7vw,36px);font-weight:900;line-height:1.05;color:#fff;margin-bottom:8px;text-shadow:0 2px 20px rgba(0,0,0,.8)}
+.hp{font-size:11px;color:rgba(255,255,255,.6);line-height:1.55;max-width:280px;margin-bottom:10px}
+.hstats{display:flex;gap:10px;flex-wrap:wrap}
+.hs{background:rgba(255,255,255,.08);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:5px 12px;font-size:10px;font-weight:700;color:rgba(255,255,255,.8)}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.cgi{background:var(--s2);border-radius:10px;padding:10px 12px;font-size:11px;font-weight:700;color:var(--t1);text-align:center;line-height:1.3}
+.sec{margin-top:26px}
+.sec-hd{padding:0 16px;margin-bottom:10px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.sl2{flex:1;min-width:0}.st{font-size:15px;font-weight:800;line-height:1.2}
+.ss{font-size:9px;color:var(--t3);margin-top:3px;line-height:1.4}
+.more{font-size:10px;font-weight:700;color:var(--pink);background:rgba(255,95,160,.1);padding:4px 11px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.row{display:flex;gap:10px;padding:2px 16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.row::-webkit-scrollbar{display:none}
+.chc{flex-shrink:0;width:135px;border-radius:14px;overflow:hidden;background:var(--s1);border:1px solid var(--bd);cursor:pointer}
+.chc:active{opacity:.85}
+.chca{height:80px;display:flex;align-items:center;justify-content:center;font-size:38px}
+.chcb{padding:9px 10px 11px}
+.chcn{font-size:11.5px;font-weight:800;margin-bottom:2px;line-height:1.2}
+.chcs{font-size:8px;color:var(--t3);margin-bottom:5px}
+.chcbadge{display:inline-block;font-size:7px;font-weight:800;padding:2px 8px;border-radius:20px;text-transform:uppercase}
+.cond-pills{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px}
+.cpill{font-size:7px;font-weight:800;padding:2px 6px;border-radius:10px;text-transform:uppercase}
+.ph{padding:60px 18px 16px}.ph h1{font-size:26px;font-weight:900;margin-bottom:4px}.ph p{font-size:11px;color:var(--t2);line-height:1.6}
+.det-top{padding:52px 18px 20px;display:flex;gap:15px;align-items:flex-start}
+.det-emo{font-size:60px;line-height:1;flex-shrink:0;margin-top:4px}
+.det-info{flex:1;min-width:0}
+.det-name{font-size:clamp(20px,5.5vw,28px);font-weight:900;color:#fff;line-height:1.1;margin-bottom:4px}
+.det-who{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+.det-subs{font-size:10px;color:var(--t3);font-weight:700;margin-bottom:8px}
+.det-desc{font-size:11.5px;color:rgba(255,255,255,.68);line-height:1.7;margin-bottom:12px}
+.det-yt{display:flex;align-items:center;justify-content:center;gap:9px;padding:13px 20px;border-radius:12px;font-size:13px;font-weight:800;color:#fff;background:#ff0000;text-decoration:none;margin:0 0 4px}
+.why{background:#0d1a2a;border-left:3px solid var(--teal);border-radius:0 12px 12px 0;padding:13px 15px;margin:14px 18px 0;font-size:11.5px;color:rgba(255,255,255,.72);line-height:1.7}
+.why b{color:var(--teal);font-weight:800}
+.tag-row{padding:12px 18px 6px;display:flex;flex-wrap:wrap;gap:7px}
+.ctag{font-size:10px;font-weight:700;padding:5px 12px;border-radius:20px}
+.vlabel{padding:14px 18px 9px;font-size:10px;font-weight:800;letter-spacing:.9px;color:var(--t3);text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
+.addbtn{font-size:10px;font-weight:700;color:var(--pink);background:rgba(255,95,160,.1);padding:5px 11px;border-radius:20px}
+.vc{display:flex;background:var(--s1);border-radius:14px;overflow:hidden;margin:0 18px 9px;border:1px solid var(--bd);text-decoration:none;color:inherit}
+.vc:active{background:var(--s2)}
+.vcl{width:58px;flex-shrink:0;display:flex;align-items:center;justify-content:center;min-height:60px}
+.vcp{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;padding-left:2px;color:#fff}
+.vcr{flex:1;padding:10px 12px 10px 0;min-width:0}
+.vct{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+.vctitle{font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.vcm{font-size:7px;font-weight:800;padding:1px 5px;border-radius:8px;background:rgba(255,95,160,.18);color:var(--pink);margin-left:5px;vertical-align:middle}
+.al{padding:0 18px}
+.as-hd{font-size:15px;font-weight:800;margin:22px 0 11px;display:flex;align-items:center;gap:9px}
+.as-ln{flex:1;height:1px;background:var(--bd)}
+.ai{display:flex;gap:13px;background:var(--s1);border-radius:14px;padding:14px;margin-bottom:9px;border:1px solid var(--bd);text-decoration:none;color:inherit}
+.ai:active{background:var(--s2)}
+.ai-ico{font-size:28px;flex-shrink:0;margin-top:2px}
+.ai-name{font-size:13.5px;font-weight:800;margin-bottom:2px}
+.ai-by{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
+.ai-desc{font-size:11px;color:var(--t2);line-height:1.55;margin-bottom:7px}
+.ai-pills{display:flex;flex-wrap:wrap;gap:3px}
+.pill{font-size:8px;font-weight:800;padding:2px 8px;border-radius:20px;text-transform:uppercase}
+.tl{padding:0 18px}
+.tc{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:15px;margin-bottom:9px;display:flex;gap:13px}
+.tn{font-size:28px;font-weight:900;color:var(--teal);line-height:1;flex-shrink:0;min-width:28px;font-style:italic}
+.tt{font-size:13px;font-weight:800;margin-bottom:5px}
+.tb{font-size:11.5px;color:var(--t2);line-height:1.7}
+.sg{padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px}
+.sl3{padding:14px 18px 6px;font-size:13px;font-weight:700}
+.sc{border-radius:14px;overflow:hidden;background:var(--s1);border:1px solid var(--bd);cursor:pointer}
+.sc:active{background:var(--s2)}
+.sc-top{height:56px;display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--s2)}
+.sc-body{padding:10px 11px 12px}
+.sc-name{font-size:12px;font-weight:800;margin-bottom:2px}
+.sc-sub{font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+.sc-desc{font-size:9.5px;color:var(--t2);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ac-hd{font-size:15px;font-weight:800;margin:20px 18px 11px;display:flex;align-items:center;gap:9px}
+.ac-ln{flex:1;height:1px;background:var(--bd)}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:flex-end}
+.modal-bg.on{display:flex}
+.modal{background:var(--s1);border-radius:22px 22px 0 0;padding:24px 20px 44px;width:100%;border-top:1px solid var(--bd)}
+.modal h3{font-size:18px;font-weight:900;margin-bottom:6px}
+.modal p{font-size:12px;color:var(--t2);margin-bottom:20px;line-height:1.65}
+.modal label{font-size:11px;font-weight:700;color:var(--t2);display:block;margin-bottom:6px}
+.modal input,.modal select{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:11px;padding:13px 15px;font-size:14px;color:var(--t1);font-family:inherit;outline:none;margin-bottom:15px;-webkit-appearance:none}
+.modal-btns{display:flex;gap:10px;margin-top:6px}
+.btn-cancel{flex:1;padding:14px;border-radius:12px;border:1px solid var(--bd);background:none;color:var(--t2);font-size:14px;font-weight:700}
+.btn-save{flex:2;padding:14px;border-radius:12px;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-size:14px;font-weight:800}
+.acard{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:16px;margin:0 18px 12px}
+.acard h3{font-size:15px;font-weight:800;margin-bottom:8px}
+.acard p{font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:8px}
+.acard p:last-child{margin-bottom:0}
+.empty-msg{color:var(--t3);font-size:12px;text-align:center;padding:28px 20px;grid-column:1/-1;line-height:1.6}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo" onclick="goHome()"><span style="font-size:22px">🌸</span><span class="brand">SpeechBloom</span></div>
+  <div class="nav-r">
+    <button class="ibtn" onclick="toggleSearch()">🔍</button>
+    <button id="btnBack" onclick="goBack()">← Back</button>
+  </div>
+</nav>
+<div id="sbar">
+  <input id="sinp" type="search" placeholder="Search: autism, apraxia, AAC, signing, Down syndrome…" autocomplete="off">
+  <button class="sx" onclick="closeSearch()">Cancel</button>
+</div>
+<div class="scrl" id="scrl">
+  <div class="page on" id="p-home">
+    <div class="hero">
+      <div class="hbg"></div><div class="hf1"></div><div class="hf2"></div>
+      <div class="hcnt">
+        <div class="hey">🌸 Communication and Speech Resources</div>
+        <div class="hh">Every child<br>deserves a voice.</div>
+        <div class="hp">Your child has more potential than any diagnosis suggests. SpeechBloom puts the world's most effective speech and communication resources in your hands — so you can show up for them every single day.</div>
+        <div class="hstats">
+          <div class="hs">33 curated channels</div>
+          <div class="hs">400+ curated videos</div>
+          <div class="hs">38 verified apps</div>
+          <div class="hs">20 daily strategies</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:18px 18px 0">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px">Wherever your child is on their journey, SpeechBloom was built for them:</div>
+      <div class="cg">
+        <div class="cgi">🧠 Autism Spectrum<div style="font-size:8.5px;font-weight:400;color:var(--t2);margin-top:3px;line-height:1.4">ASD — all levels, nonverbal to verbal</div></div>
+        <div class="cgi">💬 Speech Delay<div style="font-size:8.5px;font-weight:400;color:var(--t2);margin-top:3px;line-height:1.4">Late or limited speech at any age</div></div>
+        <div class="cgi">🤫 Nonverbal<div style="font-size:8.5px;font-weight:400;color:var(--t2);margin-top:3px;line-height:1.4">Minimally speaking or nonspeaking</div></div>
+        <div class="cgi">🧩 Down Syndrome<div style="font-size:8.5px;font-weight:400;color:var(--t2);margin-top:3px;line-height:1.4">Trisomy 21 — language and oral motor</div></div>
+        <div class="cgi">⚡ Apraxia of Speech<div style="font-size:8.5px;font-weight:400;color:var(--t2);margin-top:3px;line-height:1.4">CAS — motor planning for speech</div></div>
+        <div class="cgi">🌀 Cerebral Palsy<div style="font-size:8.5px;font-weight:400;color:var(--t2);margin-top:3px;line-height:1.4">CP — oral motor, AAC and communication</div></div>
+        <div class="cgi">👂 Auditory Processing<div style="font-size:8.5px;font-weight:400;color:var(--t2);margin-top:3px;line-height:1.4">APD — understanding what is heard</div></div>
+        <div class="cgi">🌱 Late Talkers<div style="font-size:8.5px;font-weight:400;color:var(--t2);margin-top:3px;line-height:1.4">Fewer words than expected for their age</div></div>
+        <div class="cgi">📚 Language Delays<div style="font-size:8.5px;font-weight:400;color:var(--t2);margin-top:3px;line-height:1.4">Receptive or expressive language gaps</div></div>
+        <div class="cgi">🫂 Sensory Needs<div style="font-size:8.5px;font-weight:400;color:var(--t2);margin-top:3px;line-height:1.4">SPD — regulation before communication</div></div>
+      </div>
+    </div>
+    <div id="homeSecs"></div>
+  </div>
+  <div class="page" id="p-det"><div id="detBody"></div></div>
+  <div class="page" id="p-ch">
+    <div class="ph"><h1>📺 All Channels</h1><p>33 carefully curated channels — each selected for a specific therapeutic purpose. Tap any channel to see who it is for, why it was chosen, and every video linked directly to YouTube.</p></div>
+    <div id="allChBody"></div>
+  </div>
+  <div class="page" id="p-apps">
+    <div class="ph"><h1>📱 Apps and Resources</h1><p>38 verified apps and free websites — selected because they are genuinely used by certified SLPs, special educators and families in real therapeutic practice. Tap any to open.</p></div>
+    <div class="al" id="appsBody"></div>
+  </div>
+  <div class="page" id="p-tips">
+    <div class="ph"><h1>💡 Daily Strategies</h1><p>20 evidence-based strategies drawn from certified speech-language pathologists. These are the techniques used in real therapy sessions — and you can apply them at home every single day. Consistency is everything.</p></div>
+    <div class="tl" id="tipsBody"></div>
+  </div>
+  <div class="page" id="p-search">
+    <div class="sl3" id="sLabel"></div>
+    <div class="sg" id="sgrid"></div>
+  </div>
+  <div class="page" id="p-about">
+    <div class="ph"><h1>About SpeechBloom</h1><p>Every resource in SpeechBloom has been selected based on professional recommendations from certified SLPs, evidence-based research and the lived experience of families on this journey.</p></div>
+    <div class="acard">
+      <h3>🌸 Our Mission</h3>
+      <p>SpeechBloom was built on one conviction: every child, regardless of diagnosis, background or ability, deserves every possible tool to communicate, connect and thrive.</p>
+      <p>We have done the searching so you do not have to. Every channel, video, app and strategy in SpeechBloom has been chosen with care — and placed in one place so you can spend your energy on your child, not on research.</p>
+    </div>
+    <div class="acard">
+      <h3>🧠 Who This Is For</h3>
+      <p>SpeechBloom has been built to serve any child who needs meaningful support with communication — whether they are nonverbal, have a speech delay, autism spectrum disorder, Down syndrome, childhood apraxia of speech, cerebral palsy, auditory processing differences, sensory processing needs, or are simply speaking later than expected.</p>
+      <p>It is also for every parent, caregiver, speech-language pathologist, teacher, and support worker who stands beside a child who is finding their voice.</p>
+    </div>
+    <div class="acard">
+      <h3>📺 How Videos Work</h3>
+      <p>Every video in SpeechBloom has been selected for a specific therapeutic purpose — whether that is building first words, teaching signing, supporting AAC, developing self-regulation, or building phonological awareness.</p>
+      <p>Tap any channel, then tap any video card. YouTube opens and searches for that exact video — so links never go stale as channels update. Use the + Add Video button inside any channel to save new videos you discover yourself. They will appear each time you return from the same browser on the same device.</p>
+    </div>
+    <div class="acard" style="margin-bottom:20px">
+      <h3>💡 A Note on Professional Support</h3>
+      <p>SpeechBloom is a carefully curated resource hub — not a replacement for professional speech-language therapy. The most powerful outcomes happen when families combine the daily strategies in this app with the guidance of a certified SLP.</p>
+      <p>If you are reading this, you are already doing something extraordinary for your child. Keep going.</p>
+    </div>
+  </div>
+</div>
+<div class="tabs">
+  <button class="tab on" id="t-home" onclick="nav('home')"><span class="ti">🏠</span>Home</button>
+  <button class="tab" id="t-ch" onclick="nav('ch')"><span class="ti">📺</span>Channels</button>
+  <button class="tab" id="t-apps" onclick="nav('apps')"><span class="ti">📱</span>Apps</button>
+  <button class="tab" id="t-tips" onclick="nav('tips')"><span class="ti">💡</span>Tips</button>
+  <button class="tab" id="t-about" onclick="nav('about')"><span class="ti">ℹ️</span>About</button>
+</div>
+<div class="modal-bg" id="addModal">
+  <div class="modal">
+    <h3>+ Add a Video</h3>
+    <p>Found a great video on YouTube? Add it here. It will appear every time you return to SpeechBloom from this browser on this device. Copy the exact video title for best search results.</p>
+    <label>Channel</label>
+    <select id="addCh"></select>
+    <label>Video Title — copy the exact YouTube title for best results</label>
+    <input id="addTitle" type="text" placeholder="Paste or type the video title here">
+    <label>Category Tag</label>
+    <input id="addTag" type="text" placeholder="e.g. Songs, AAC, Signing, Speech, Regulation">
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveVid()">Save Video</button>
+    </div>
+  </div>
+</div>
+<script>
+
+var CH=[
+{id:"rachel",s:"speech",n:"Ms Rachel",e:"🌟",c:"var(--amber)",
+ who:"Rachel Accurso M.Ed · NYU · SLP-advised · Created for her son with a speech delay",
+ sub:"17M+ subscribers · Netflix · Most followed speech channel worldwide",
+ url:"https://www.youtube.com/@msrachel",
+ conds:["speech delay","autism","late talker","Down syndrome","nonverbal"],
+ d:"The gold standard. Created after her son Thomas did not say his first word until age 2. Works with certified SLPs on every episode. Uses parentese, strategic pauses, mouth close-ups, signing and repetition — all evidence-based.",
+ y:"Watch WITH them. Copy every action and sign along. When she pauses, model the word yourself before she continues. Active co-viewing multiplies the impact enormously.",
+ tags:["first words","signing","songs","milestones","social","emotions","phonics"],
+ v:[["Ms Rachel Baby Learning First Words Songs Nursery Rhymes","First Words"],["Ms Rachel Learn to Talk Speech Practice Toddlers","Speech"],["Ms Rachel Baby Sign Language First Signs","Signing"],["Ms Rachel Wheels on the Bus Nursery Rhymes","Songs"],["Ms Rachel Emotions Colours Animals Toddler Learning","Emotions"],["Ms Rachel Friendship Kindness Social Skills Kids","Social"],["Ms Rachel Learn to Read Phonics ABCs Preschool","Literacy"],["Ms Rachel Hop Little Bunnies Songs for Littles","Songs"],["Ms Rachel Music Class Babies Toddlers","Songs"],["Ms Rachel Animal Sounds First Words Babies","First Words"],["Ms Rachel Counting Songs 1 to 10 Toddlers","Numbers"],["Ms Rachel Colours Shapes Learning Toddlers","Vocabulary"],["Ms Rachel What Is in the Box Speech Learning","Speech"],["Ms Rachel Farm Animals Nursery Rhymes","Animals"],["Ms Rachel Body Parts Head Shoulders Knees Toes","Body Parts"],["Ms Rachel Play Along Milestones Speech Songs","Speech"],["Ms Rachel Hello Song Toddlers","Social"],["Ms Rachel Feelings Big Emotions Kids","Emotions"]]},
+{id:"heymacy",s:"speech",n:"Hey Macy",e:"🎤",c:"var(--teal)",
+ who:"Macy · Pediatric Speech Therapist · Clinical intent in every activity",
+ sub:"Growing channel · Songs and play for toddlers",
+ url:"https://www.youtube.com/channel/UCdItHwclpOeRx0UGelc5Hgw",
+ conds:["speech delay","late talker","autism"],
+ d:"A real practising pediatric speech therapist who designed every song and activity on this channel with specific clinical intent. Not entertainment — therapy delivered through music and play, made accessible for daily use at home.",
+ y:"Her activities are clinically designed. Do them alongside your child and repeat the same ones daily — repetition is how language pathways are built.",
+ tags:["speech","songs","play","clinical"],
+ v:[["Hey Macy Speech Therapy Songs Toddlers","Speech"],["Hey Macy Language Play Activities Babies","Language"],["Hey Macy First Words Songs Children","First Words"],["Hey Macy Communication Play Toddlers","Communication"],["Hey Macy Articulation Practice Songs Kids","Articulation"],["Hey Macy Requesting and Commenting Toddlers","Requesting"],["Hey Macy Cause and Effect Songs Babies","Pre-Speech"],["Hey Macy Animal Sounds Speech Therapy","Animals"],["Hey Macy Early Intervention Songs Families","For Parents"],["Hey Macy Vocabulary Building Songs Toddlers","Vocabulary"]]},
+{id:"zoey",s:"speech",n:"Ms Zoey",e:"💜",c:"var(--purple)",
+ who:"Zoisa Allen MS-SLP · Licensed SLP · Her sister was born prematurely with ASD",
+ sub:"Growing fast · Free weekly episodes · Low stimulation format",
+ url:"https://www.youtube.com/@mszoeyletsplay",
+ conds:["autism","speech delay","sensory needs","late talker","nonverbal"],
+ d:"A real licensed SLP whose sister was born prematurely and diagnosed with ASD. Low-stimulation format — fewer distractions, slower pace, more processing time — designed for children who get easily overstimulated.",
+ y:"Low stimulation is the therapeutic feature. Watch the same episodes repeatedly — predictability is how language is acquired, not a flaw.",
+ tags:["speech","language","first words","low stimulation","slp show"],
+ v:[["Ms Zoey Lets Play Speech Therapy Episode 1","Speech"],["Ms Zoey Toddler Talk Live Speech Session","Language"],["Ms Zoey Animal Sounds First Words","First Words"],["Ms Zoey Songs Speech Toddlers","Songs"],["Ms Zoey Early Language Activities Babies","Activities"],["Ms Zoey Cause Effect Play Toddlers","Pre-Speech"],["Ms Zoey Joint Attention Activities","Pre-Language"],["Ms Zoey Requesting Skills Nonverbal Toddlers","AAC"],["Ms Zoey Following Directions Activities","Comprehension"]]},
+{id:"cassie",s:"speech",n:"Ms Cassie",e:"💙",c:"var(--blue)",
+ who:"Cassidy MS CCC-SLP · Certified Feeding Therapist · Chicago",
+ sub:"150K+ families · Feeding and speech addressed together",
+ url:"https://www.youtube.com/@cassidyandkids",
+ conds:["speech delay","feeding difficulties","apraxia","late talker"],
+ d:"Chicago-based SLP and certified feeding therapist. The oral muscles used for eating are the same ones used for speech — she addresses both together with honesty and clarity.",
+ y:"Essential if your child has both feeding and speech difficulties. Her red flags video is critical watching for every parent.",
+ tags:["speech","feeding","first words","strategies","red flags","oral motor"],
+ v:[["Ms Cassie First Words Which to Target and How","First Words"],["Ms Cassie Evidence Based Tips Parents Speech Delay","Tips"],["Ms Cassie Speech Delay Red Flags Toddlers","Red Flags"],["Ms Cassie Feeding Speech Connection Babies","Feeding"],["Ms Cassie Daily Strategies Help Toddler Talk","Strategies"],["Ms Cassie Oral Motor Exercises Toddlers","Oral Motor"],["Ms Cassie When to Seek Speech Therapy","Guidance"],["Ms Cassie Milestones 12 to 24 Months","Milestones"],["Ms Cassie Picky Eating Speech Connection","Feeding"],["Ms Cassie Simple Language Boost Home","Strategies"]]},
+{id:"caitie",s:"speech",n:"Caitie's Classroom",e:"🍎",c:"var(--red)",
+ who:"Caitlin Claessens · Early Childhood Educator · Super Simple Songs family",
+ sub:"8M+ subscribers · Inclusive design for all abilities",
+ url:"https://www.youtube.com/@CaitiesClassroom",
+ conds:["autism","speech delay","sensory needs","Down syndrome","late talker"],
+ d:"Deliberately slow, gentle and inclusive pace. Songs, crafts, movement and social-emotional learning created for all abilities including children who need more processing time.",
+ y:"Her slow pace is the therapeutic feature. She never rushes. This gives every child the processing time that faster shows simply do not provide.",
+ tags:["songs","social","emotions","abc","numbers","inclusive","gentle pace"],
+ v:[["Caitie Classroom Songs Learning Kids","Songs"],["Caitie Classroom Action Songs Toddlers","Movement"],["Caitie Classroom ABCs Letters Children","Literacy"],["Caitie Classroom Emotions Feelings Kids","Emotions"],["Caitie Classroom Numbers Counting Songs","Numbers"],["Caitie Classroom Colours Toddlers","Colours"],["Caitie Classroom Animal Songs Children","Animals"],["Caitie Classroom Body Parts Songs Kids","Body Parts"],["Caitie Classroom Kindness Songs Children","Social"],["Caitie Classroom Nursery Rhymes Compilation","Songs"]]},
+{id:"funlittle",s:"speech",n:"Fun Little Steps",e:"🌟",c:"var(--pink)",
+ who:"Early language animations · Independently produced · Ages 0-3 · Speech delay community recommended",
+ sub:"Growing fast · Built specifically for early language learners",
+ url:"https://www.youtube.com/@FunLittleSteps",
+ conds:["speech delay","late talker","autism"],
+ d:"Visually stimulating animations built specifically for early language learners. Slow, clear and highly repetitive by design — because repetition is how language pathways are formed. Consistently recommended by parents navigating speech delays for its gentle, accessible first-words format.",
+ y:"Animal sounds are usually first vocalisations. This channel makes them irresistible and repeatable — exactly what builds the foundation for first words.",
+ tags:["first words","animal sounds","vocabulary","songs"],
+ v:[["Fun Little Steps Animal Sounds Babies Toddlers","Animals"],["Fun Little Steps First Words Songs Toddlers","First Words"],["Fun Little Steps Colours Song Kids","Colours"],["Fun Little Steps Numbers Counting Song","Numbers"],["Fun Little Steps Shapes Song Children","Shapes"],["Fun Little Steps Body Parts Song Babies","Body Parts"],["Fun Little Steps Action Songs Toddlers","Movement"],["Fun Little Steps Nursery Rhymes Babies","Songs"]]},
+{id:"dreamenglish",s:"speech",n:"Dream English Kids",e:"🌍",c:"var(--purple)",
+ who:"Matt · 4M subscribers · Special needs and bilingual families",
+ sub:"4M+ subscribers · Clear pronunciation · Bilingual families",
+ url:"https://www.youtube.com/@DreamEnglishKids",
+ conds:["speech delay","bilingual","autism","late talker","EAL"],
+ d:"Fun catchy songs for young learners, special needs children, ESL and bilingual families. Clear pronunciation, slow pace and repetitive structure. Widely recommended by SLPs for autism and speech delays.",
+ y:"Particularly valuable for bilingual or multilingual families. Clear pronunciation and repetitive structure make vocabulary accessible regardless of home language.",
+ tags:["first words","songs","vocabulary","bilingual","special needs","EAL"],
+ v:[["Dream English Kids Walking Walking Song","Action Songs"],["Dream English Kids Animal Sounds Song","Animals"],["Dream English Kids ABC Alphabet Song","Alphabet"],["Dream English Kids Numbers Song 1 to 10","Numbers"],["Dream English Kids If You Are Happy Song","Emotions"],["Dream English Kids Colours Song Kids","Colours"],["Dream English Kids Head Shoulders Knees Toes","Body Parts"],["Dream English Kids Wheels on Bus","Songs"],["Dream English Kids Hello Song Children","Social"],["Dream English Kids Goodbye Song Toddlers","Routine"]]},
+{id:"adrienne",s:"signing",n:"Learn With Adrienne",e:"🤟",c:"var(--purple)",
+ who:"Adrienne MS CCC-SLP · Pediatric SLP AND Certified Sign Language Teacher",
+ sub:"128K subscribers · SLP and signing expert combined",
+ url:"https://www.youtube.com/@LearnWithAdrienne",
+ conds:["nonverbal","autism","speech delay","Down syndrome","hearing differences"],
+ d:"The only channel run by someone who is both a certified pediatric SLP and a certified sign language teacher. Research consistently shows that signing accelerates speech rather than delaying it.",
+ y:"Signing bridges the gap to speech for nonverbal children. Start with: more, help, eat, all done, please. Use these at every meal, every day without exception.",
+ tags:["signing","aac","language","nonverbal","bridge to speech"],
+ v:[["Learn With Adrienne Baby Sign Language First 20 Signs","Signing"],["Learn With Adrienne Everyday Signs Toddlers","Signing"],["Learn With Adrienne How Signing Helps Speech","Evidence"],["Learn With Adrienne ASL Songs Children","Songs"],["Learn With Adrienne More Signs Babies Toddlers","Signing"],["Learn With Adrienne Food Signs Toddlers","Signing"],["Learn With Adrienne Emotion Signs Kids","Signing"],["Learn With Adrienne Animal Signs Babies","Signing"],["Learn With Adrienne Core Words Sign Language","Core Words"],["Learn With Adrienne Signing Talking Together","Language"]]},
+{id:"madel",s:"signing",n:"Rachel Madel SLP",e:"💻",c:"var(--blue)",
+ who:"Rachel Madel MA CCC-SLP · International AAC Specialist · 40,000+ clinicians trained",
+ sub:"1.5M podcast downloads · 103 countries · Nonspeaking children",
+ url:"https://www.youtube.com/@RachelMadelSpeechTherapy",
+ conds:["nonverbal","autism","AAC user","cerebral palsy","apraxia"],
+ d:"Internationally recognised AAC specialist. Has trained over 40,000 clinicians worldwide. Specialises exclusively in nonspeaking and minimally speaking children with autism. Free resources at rachelmadel.com.",
+ y:"If your child is nonverbal and exploring AAC, this is the single most important channel. Every parent of a nonspeaking child should start here.",
+ tags:["aac","nonverbal","modelling","core words","pecs"],
+ v:[["Rachel Madel SLP Getting Started AAC Parents","AAC"],["Rachel Madel SLP How to Model AAC Aided Language","Modelling"],["Rachel Madel SLP Teaching More Core Word","Core Words"],["Rachel Madel SLP Low Tech Communication Boards Home","Low Tech"],["Rachel Madel SLP Why Child Wont Use AAC Device","AAC"],["Rachel Madel SLP PECS for Beginners","PECS"],["Rachel Madel SLP Core Vocabulary Nonverbal Kids","Core Words"],["Rachel Madel SLP Communication Temptations Home","Strategies"],["Rachel Madel SLP AAC Myths Debunked Parents","AAC"],["Rachel Madel SLP Robust AAC from the Start","AAC"],["Rachel Madel SLP Presuming Competence Nonspeaking","AAC"],["Rachel Madel SLP Language Development AAC Users","Language"]]},
+{id:"tmt",s:"parent",n:"Teach Me To Talk",e:"🎓",c:"var(--amber)",
+ who:"Laura Mize MS CCC-SLP · Free weekly tips since 2008",
+ sub:"75K subscribers · Most trusted free SLP resource worldwide",
+ url:"https://www.youtube.com/@teachmetotalk",
+ conds:["speech delay","autism","late talker","Down syndrome","apraxia","nonverbal"],
+ d:"Laura Mize has published a free Therapy Tip every single week since 2008 — the most trusted resource for families of toddlers with language delays worldwide. Free e-book at teachmetotalk.com.",
+ y:"These are the exact strategies your SLP uses in sessions. You have far more hours with your child than any therapist ever will. Learn them and apply them all day.",
+ tags:["parent education","strategies","aac","imitation","requesting","language","sensory"],
+ v:[["Teach Me To Talk Language Stimulation Strategies Parents","Strategies"],["Teach Me To Talk Teaching Imitation Before Speech","Imitation"],["Teach Me To Talk Teaching Your Child to Request","Requesting"],["Teach Me To Talk How to Model AAC Device Home","AAC"],["Teach Me To Talk Receptive Language Understanding","Language"],["Teach Me To Talk Cause Effect Pre Communication","Pre-Speech"],["Teach Me To Talk Early Days Speech Therapy Families","For Parents"],["Teach Me To Talk Sensory Processing Communication","Sensory"],["Teach Me To Talk Play Based Therapy Home","Play"],["Teach Me To Talk Expanding Utterance Length","Language"],["Teach Me To Talk Joint Attention Activities Toddlers","Pre-Language"],["Teach Me To Talk Vocabulary Building Home","Vocabulary"],["Teach Me To Talk Routines Support Language","Routines"],["Teach Me To Talk Reading Books Toddlers SLP Style","Literacy"],["Teach Me To Talk Following Directions Activities","Comprehension"],["Teach Me To Talk Gestural Communication Babies","Pre-Speech"],["Teach Me To Talk Increasing Communication Frequency","Strategies"]]},
+{id:"slk",s:"parent",n:"Speech and Language Kids",e:"🧠",c:"var(--teal)",
+ who:"Carrie Clark MS CCC-SLP · speechandlanguagekids.com",
+ sub:"30K subscribers · Every diagnosis covered step by step",
+ url:"https://www.youtube.com/@SpeechAndLanguageKids",
+ conds:["autism","speech delay","Down syndrome","apraxia","cerebral palsy","nonverbal"],
+ d:"The most comprehensive free speech therapy resource online. Every area — AAC, autism, Down syndrome, apraxia, cerebral palsy, feeding, PECS, social skills — covered with step-by-step guides and free printables.",
+ y:"Start here for any specific diagnosis or topic. Carrie covers everything clearly. Visit speechandlanguagekids.com for hundreds more free printables.",
+ tags:["parent education","aac","pecs","autism","down syndrome","apraxia","cerebral palsy"],
+ v:[["Speech Language Kids What is AAC Complete Guide","AAC"],["Speech Language Kids Core Words 50 Words Unlock Everything","Core Words"],["Speech Language Kids PECS Phase 1 Step by Step","PECS"],["Speech Language Kids Joint Attention Foundation Communication","Pre-Language"],["Speech Language Kids Speech Therapy Autism","Autism"],["Speech Language Kids Play Based Speech Therapy Home","Play"],["Speech Language Kids Reading Books SLP Way","Literacy"],["Speech Language Kids Mealtime Language Strategies","Mealtime"],["Speech Language Kids What is Apraxia Speech","Apraxia"],["Speech Language Kids Down Syndrome Speech Therapy","Down Syndrome"],["Speech Language Kids Sensory Processing Language","Sensory"],["Speech Language Kids Aided Language Stimulation","AAC"],["Speech Language Kids Social Pragmatic Skills","Social"],["Speech Language Kids Cerebral Palsy Communication","Cerebral Palsy"],["Speech Language Kids AAC Myths Parents","AAC"],["Speech Language Kids Late Talker vs Speech Delay","Understanding"],["Speech Language Kids Gestalt Language Processing","Language"]]},
+{id:"wt",s:"parent",n:"Walkie Talkie Speech",e:"📢",c:"var(--teal)",
+ who:"Kayla Chalko SLP · Walkie Talkie Speech Therapy Inc.",
+ sub:"94K subscribers · Jargon-free practical parent tips",
+ url:"https://www.youtube.com/@WalkieTalkieSpeechTherapy",
+ conds:["speech delay","late talker","autism"],
+ d:"Kayla Chalko posts weekly practical speech therapy tips that require no jargon, no equipment and no prior knowledge. Everything she shares can be applied immediately at home. One of the most accessible and consistently recommended SLP channels for parents starting out.",
+ y:"Start here before any other parent channel. No jargon, no prerequisites, no equipment. Kayla speaks to you like a knowledgeable friend, not a clinician writing for other clinicians.",
+ tags:["parent education","strategies","vocabulary","pre-speech","home therapy"],
+ v:[["Walkie Talkie Speech 10 Things TODAY Child Speech","Start Today"],["Walkie Talkie Speech Why Is My Child Not Talking","Understanding"],["Walkie Talkie Speech Babbling Before First Words","Pre-Speech"],["Walkie Talkie Speech Building Vocabulary Fast Toddlers","Vocabulary"],["Walkie Talkie Speech Eye Contact Social Attention","Social"],["Walkie Talkie Speech Language Stimulation During Play","Strategies"],["Walkie Talkie Speech Expanding Single Words to Phrases","Language"],["Walkie Talkie Speech Encouraging Communication Attempts","Strategies"],["Walkie Talkie Speech Screen Time and Speech Delays","Guidance"],["Walkie Talkie Speech Simple Language Targets Home","Strategies"]]},
+{id:"eugene",s:"parent",n:"Eugene Speech Therapy",e:"🔬",c:"var(--blue)",
+ who:"Licensed SLPs · Eugene Oregon · Oral motor and articulation focus",
+ sub:"38K subscribers · Home exercises for speech muscles",
+ url:"https://www.youtube.com/@EugeneSpeechTherapy",
+ conds:["speech delay","cerebral palsy","feeding difficulties","apraxia","Down syndrome"],
+ d:"Clear exercise-focused videos on oral motor strength, articulation and the physical mechanics of speech. Best for children with oral motor weakness affecting both feeding and speech.",
+ y:"If your child has feeding difficulties or unclear sounds, oral motor weakness may be a factor. These safe exercises can be done at home daily — 5 minutes before meals.",
+ tags:["parent education","oral motor","articulation","feeding","exercises"],
+ v:[["Eugene Speech Therapy Oral Motor Exercises Lips Tongue Jaw","Oral Motor"],["Eugene Speech Therapy Oral Sensory Picky Eaters","Feeding"],["Eugene Speech Therapy Articulation Exercises Children","Articulation"],["Eugene Speech Therapy Feeding Therapy Tips Home","Feeding"],["Eugene Speech Therapy Tongue Exercises for Kids","Oral Motor"],["Eugene Speech Therapy Lip Strengthening Exercises Children","Oral Motor"],["Eugene Speech Therapy Blowing Exercises for Speech","Oral Motor"],["Eugene Speech Therapy Jaw Exercises for Toddlers","Oral Motor"],["Eugene Speech Therapy Speech Delay Exercises Home","Speech"],["Eugene Speech Therapy Dysarthria Exercises Children","Articulation"]]},
+{id:"apraxiakids",s:"parent",n:"Apraxia Kids",e:"⚡",c:"var(--amber)",
+ who:"Apraxia Kids Foundation · The world's leading childhood apraxia charity",
+ sub:"Non-profit · Educational resource for CAS families worldwide",
+ url:"https://www.youtube.com/@apraxiakids",
+ conds:["apraxia","speech delay","motor speech disorder"],
+ d:"The official channel of Apraxia Kids Foundation — the world's leading non-profit for Childhood Apraxia of Speech (CAS). Evidence-based information and strategies for families navigating apraxia.",
+ y:"If your child has CAS or suspected apraxia, start here. Apraxia requires a fundamentally different therapeutic approach than other speech delays. This explains exactly what that means at home.",
+ tags:["apraxia","motor speech","parent education","CAS"],
+ v:[["Apraxia Kids What is Childhood Apraxia of Speech","Understanding"],["Apraxia Kids Signs and Symptoms CAS Children","Signs"],["Apraxia Kids Treatment Approaches Home","Treatment"],["Apraxia Kids How to Help Child with CAS at Home","Strategies"],["Apraxia Kids AAC and Childhood Apraxia Speech","AAC"],["Apraxia Kids Parent Perspectives on CAS","For Parents"],["Apraxia Kids Getting a CAS Diagnosis for Parents","Diagnosis"],["Apraxia Kids DTTC Treatment for CAS Explained","Treatment"],["Apraxia Kids ReST Therapy for Childhood Apraxia","Treatment"],["Apraxia Kids Evaluating for CAS What to Expect","Evaluation"]]},
+{id:"sss",s:"songs",n:"Super Simple Songs",e:"🎵",c:"var(--red)",
+ who:"SLP-approved · Repetitive, clear and slow · 35M subscribers",
+ sub:"35M+ subscribers · Speech therapy community favourite",
+ url:"https://www.youtube.com/@SuperSimpleSongs",
+ conds:["speech delay","autism","late talker","sensory needs","Down syndrome"],
+ d:"The speech therapy community's most recommended music channel. Repetitive, visually clear, slow-paced and predictable. Recommended by SLPs worldwide for over a decade.",
+ y:"Pause before the last word of each verse and wait. Your child may fill it in. This is cloze procedure — one of the most effective language-building techniques available.",
+ tags:["songs","emotions","vocabulary","body parts","animals","nursery rhymes"],
+ v:[["Super Simple Songs If You Are Happy Know It","Emotions"],["Super Simple Songs Wheels on Bus","Vocabulary"],["Super Simple Songs Head Shoulders Knees Toes","Body Parts"],["Super Simple Songs Old MacDonald Had Farm","Animals"],["Super Simple Songs Baby Shark Dance","Engagement"],["Super Simple Songs Itsy Bitsy Spider","Songs"],["Super Simple Songs Open Shut Them Toddlers","Movement"],["Super Simple Songs Five Little Monkeys","Numbers"],["Super Simple Songs Bath Song Routine","Routine"],["Super Simple Songs Twinkle Twinkle Little Star","Lullaby"],["Super Simple Songs Row Row Row Your Boat","Songs"],["Super Simple Songs ABC Song Alphabet","Literacy"],["Super Simple Songs Good Morning Song Routine","Routine"],["Super Simple Songs Yes Yes Vegetables","Vocabulary"],["Super Simple Songs Shake My Sillies Out","Movement"],["Super Simple Songs Five Little Ducks","Counting"]]},
+{id:"gracies",s:"songs",n:"Gracie's Corner",e:"🌈",c:"var(--pink)",
+ who:"Graceyn Hollingsworth · Educator family · Washington Post featured",
+ sub:"2.8M+ subscribers · Afrocentric educational songs",
+ url:"https://www.youtube.com/@GraciesCorner",
+ conds:["speech delay","late talker","autism"],
+ d:"Created by an educator family who saw the need for joyful, culturally rich educational content. Songs span counting, colours, phonics and coping skills — delivered with Afrocentric rhythms that drive exceptionally high engagement. Parents consistently report that toddlers who are reluctant to engage with other channels are fully present and participating with Gracie's Corner.",
+ y:"High engagement and diverse representation. Parents report toddlers actively participate and dance along. Motivation is therapy — use it.",
+ tags:["songs","diversity","phonics","counting","emotions","coping","representation"],
+ v:[["Gracie Corner ABC Phonics Song Kids","Phonics"],["Gracie Corner Counting Song 1 to 20 Children","Counting"],["Gracie Corner Clean Up Song Toddlers","Routine"],["Gracie Corner Emotions Feelings Song Kids","Emotions"],["Gracie Corner Colors Song Toddlers","Colours"],["Gracie Corner Shapes Song Children","Shapes"],["Gracie Corner Wash Hands Song","Routine"],["Gracie Corner Days of Week Song","Routine"],["Gracie Corner Body Parts Song Kids","Body Parts"],["Gracie Corner Animal Sounds Song Babies","Animals"]]},
+{id:"jh",s:"songs",n:"Jack Hartmann",e:"🎸",c:"var(--blue)",
+ who:"Movement-based learning · 6.5M subscribers · Used by SLPs worldwide",
+ sub:"6.5M subscribers · Exercise songs for language and learning",
+ url:"https://www.youtube.com/@JackHartmann",
+ conds:["speech delay","autism","ADHD","sensory needs","late talker"],
+ d:"Movement-based learning songs combining physical exercise with education. Research shows movement improves memory and language retention. Used by SLPs and special education teachers worldwide.",
+ y:"Move WITH your child. Embodied learning links body movement to words and improves retention significantly. Following movement instructions is itself an early language comprehension milestone.",
+ tags:["songs","movement","literacy","phonics","numbers","exercise"],
+ v:[["Jack Hartmann ABC Alphabet Song Kids","Literacy"],["Jack Hartmann Count and Move 1 to 100","Numbers"],["Jack Hartmann Shake It Down Movement Song","Movement"],["Jack Hartmann Sight Words I Can Read","Literacy"],["Jack Hartmann Days of Week Song Kids","Routine"],["Jack Hartmann Phonics Songs Letter Sounds","Phonics"],["Jack Hartmann Exercise Songs for Kids","Movement"],["Jack Hartmann Colors Song Toddlers","Colours"],["Jack Hartmann Shapes Song Children","Shapes"],["Jack Hartmann Body Parts Brain Break","Body Parts"]]},
+{id:"cocomelon",s:"songs",n:"Cocomelon",e:"🎶",c:"var(--red)",
+ who:"Nursery rhymes and life skills · 170M subscribers",
+ sub:"170M+ subscribers · Daily routine vocabulary songs",
+ url:"https://www.youtube.com/@Cocomelon",
+ conds:["speech delay","late talker","autism"],
+ d:"Routine vocabulary — the words children hear at bath time, meal time and bedtime — is acquired dramatically faster than novel vocabulary. Cocomelon builds exactly those words through catchy, repetitive songs. Best watched with a parent who pauses, names and describes what is happening on screen.",
+ y:"Watch together and name items as they appear. The routine songs build the same words your child hears at bath time, meal time and bedtime — the most powerful language contexts.",
+ tags:["songs","routine","vocabulary","abc","daily life"],
+ v:[["Cocomelon Bath Song Toddlers","Routine"],["Cocomelon Yes Yes Vegetables Song Kids","Vocabulary"],["Cocomelon ABC Song Children","Literacy"],["Cocomelon Wheels on Bus Babies","Songs"],["Cocomelon Boo Boo Song Toddlers","Social"],["Cocomelon Good Morning Song Routine","Routine"],["Cocomelon Brush Teeth Song Kids","Routine"],["Cocomelon Animal Song Toddlers","Animals"],["Cocomelon Doctor Song Children","Vocabulary"],["Cocomelon Bedtime Song Babies","Routine"]]},
+{id:"lbb",s:"songs",n:"Little Baby Bum",e:"🎠",c:"var(--pink)",
+ who:"Nursery rhymes · Multi-language · 45M subscribers",
+ sub:"45M+ subscribers · Gentle, repetitive, multilingual",
+ url:"https://www.youtube.com/@LittleBabyBum",
+ conds:["speech delay","sensory needs","late talker","bilingual","autism"],
+ d:"Gentle repetitive nursery rhymes ideal for very young children and those with sensory differences. Available in multiple languages — excellent for multilingual families.",
+ y:"The gentle pace and repetition are ideal for children with sensory sensitivities. The same rhyme heard across multiple channels reinforces language patterns powerfully.",
+ tags:["songs","nursery rhymes","gentle","sensory-friendly","multilingual"],
+ v:[["Little Baby Bum Wheels on Bus Babies","Nursery Rhymes"],["Little Baby Bum Twinkle Twinkle Little Star","Lullaby"],["Little Baby Bum Five Little Ducks Toddlers","Counting"],["Little Baby Bum Old MacDonald Farm","Animals"],["Little Baby Bum ABC Song Alphabet Kids","Literacy"],["Little Baby Bum Itsy Bitsy Spider","Songs"],["Little Baby Bum Head Shoulders Knees Toes","Body Parts"],["Little Baby Bum Colours Song Toddlers","Colours"],["Little Baby Bum Numbers Song 1 to 10","Numbers"],["Little Baby Bum Animals Sound Song Babies","Animals"]]},
+{id:"mgc",s:"songs",n:"Mother Goose Club",e:"🪿",c:"var(--amber)",
+ who:"Live action nursery rhymes · Real performers · 10M subscribers",
+ sub:"10M+ subscribers · Real people motivate more imitation",
+ url:"https://www.youtube.com/@MotherGooseClub",
+ conds:["speech delay","autism","late talker"],
+ d:"Classic nursery rhymes performed by real people in costume. Excellent for phonological awareness. Real performers consistently motivate more imitation than cartoons.",
+ y:"Real people performing motivates more imitation than cartoons. Rhythm is processed in the same brain area as language. Rhymes build the neurological foundation for speech.",
+ tags:["songs","nursery rhymes","phonological awareness","live action","imitation"],
+ v:[["Mother Goose Club Row Row Row Boat","Rhymes"],["Mother Goose Club Head Shoulders Knees Toes","Body Parts"],["Mother Goose Club If You Are Happy","Emotions"],["Mother Goose Club Wheels on Bus","Songs"],["Mother Goose Club Itsy Bitsy Spider","Songs"],["Mother Goose Club Twinkle Twinkle Little Star","Lullaby"],["Mother Goose Club Old MacDonald Farm","Animals"],["Mother Goose Club ABC Song Alphabet","Literacy"]]},
+{id:"pinkfong",s:"songs",n:"Pinkfong",e:"🦈",c:"var(--purple)",
+ who:"High engagement · Baby Shark · 76M subscribers",
+ sub:"76M+ subscribers · Motivation is the therapeutic value",
+ url:"https://www.youtube.com/@Pinkfong",
+ conds:["speech delay","autism","late talker"],
+ d:"Highly engaging songs. Baby Shark is the most-watched YouTube video in history. The therapeutic value is motivation — a motivated child engages repeatedly, and repetition builds language patterns.",
+ y:"Motivation is therapy. High engagement equals high repetition equals language learning. If your child loves Baby Shark, they are building language patterns every single time.",
+ tags:["songs","engagement","counting","animals"],
+ v:[["Pinkfong Baby Shark Dance Children","Engagement"],["Pinkfong Five Little Monkeys Jumping Bed","Counting"],["Pinkfong Old MacDonald Farm Animals Song","Animals"],["Pinkfong Wheels on Bus Song Babies","Songs"],["Pinkfong ABC Song Alphabet Kids","Literacy"],["Pinkfong If You Are Happy Know It","Emotions"],["Pinkfong Head Shoulders Knees Toes","Body Parts"],["Pinkfong Animal Sounds Song Toddlers","Animals"]]},
+{id:"daniel",s:"social",n:"Daniel Tiger's Neighborhood",e:"🐯",c:"var(--amber)",
+ who:"PBS Kids · Georgetown University validated · Based on Mister Rogers",
+ sub:"Research-proven · Official PBS YouTube channel",
+ url:"https://www.youtube.com/@DanielTigersNeighborhoodPBS",
+ conds:["autism","speech delay","sensory needs","ADHD","social communication"],
+ d:"Georgetown University proves that children who watch Daniel Tiger have measurably higher empathy, better emotion recognition and more confidence in social situations. Strategy songs become part of daily life.",
+ y:"The strategy songs become real vocabulary: When you feel mad, take a deep breath. Research-proven. A regulated child communicates more. This show is genuinely therapeutic.",
+ tags:["social-emotional","emotions","routines","empathy","coping","self-regulation"],
+ v:[["Daniel Tiger Neighborhood Making New Friends Episode","Social"],["Daniel Tiger Feelings Songs Collection Toddlers","Emotions"],["Daniel Tiger When You Feel Mad Take Deep Breath","Regulation"],["Daniel Tiger Goes to School Episode Kids","Routines"],["Daniel Tiger Tries Something New Children","Courage"],["Daniel Tiger Bedtime Toddlers","Routine"],["Daniel Tiger Sharing with Friends Episode","Social"],["Daniel Tiger Using Words When Feel Mad","Regulation"],["Daniel Tiger Doctor Episode","Vocabulary"],["Daniel Tiger Potty Training Episode","Routine"],["Daniel Tiger Play Date Episode","Social"],["Daniel Tiger Grownups Come Back Episode","Separation"]]},
+{id:"bluey",s:"social",n:"Bluey",e:"🐕",c:"var(--blue)",
+ who:"Ludo Studio · Australian · Most acclaimed children's show of its generation",
+ sub:"Disney+ and Netflix · Watch the parents — not just the children",
+ url:"https://www.youtube.com/@BlueyOfficialChannel",
+ conds:["speech delay","autism","social communication","language development"],
+ d:"The most acclaimed children's show of its generation. Models extraordinarily rich, natural parent-child language interaction, imaginative play, emotional regulation and problem-solving.",
+ y:"Watch the parents carefully. They follow the child's lead, narrate play, expand language naturally, and respond to every communication attempt. This is a live masterclass in what SLPs recommend.",
+ tags:["social-emotional","imaginative play","language modelling","emotions","family"],
+ v:[["Bluey The Creek Episode","Play"],["Bluey Camping Episode Families","Play"],["Bluey Baby Race Episode","Social"],["Bluey Takeaway Episode Kids","Regulation"],["Bluey Markets Episode","Language"],["Bluey Hammerbarn Episode","Emotions"],["Bluey Shaun Episode","Imagination"],["Bluey Flat Pack Episode","Story"],["Bluey Bus Ride Episode","Social"],["Bluey Dad Baby Episode","Play"],["Bluey Library Episode","Language"],["Bluey Smoochy Kiss Episode","Social"]]},
+{id:"cosmic",s:"social",n:"Cosmic Kids Yoga",e:"🧘",c:"var(--purple)",
+ who:"Mindfulness and movement · 3M subscribers · Autism and ADHD recommended",
+ sub:"3M+ subscribers · Free · Use BEFORE speech practice",
+ url:"https://www.youtube.com/@CosmicKidsYoga",
+ conds:["autism","ADHD","sensory needs","anxiety","speech delay","cerebral palsy"],
+ d:"Yoga and mindfulness through imaginative storytelling. Builds focus, self-regulation and calm. Recommended by autism, ADHD and special needs specialists. A regulated child communicates significantly more.",
+ y:"Use this BEFORE speech practice sessions. Self-regulation is not separate from communication — it is the prerequisite. A calm, regulated child communicates significantly more.",
+ tags:["social-emotional","mindfulness","self-regulation","calm","focus","anxiety","yoga"],
+ v:[["Cosmic Kids Yoga Frozen Adventure Children","Yoga"],["Cosmic Kids Yoga Peace Out Guided Meditation","Mindfulness"],["Cosmic Kids Yoga Peppa Pig Adventure Toddlers","Yoga"],["Cosmic Kids Yoga Rainbow Relaxation Children","Calm"],["Cosmic Kids Yoga Lion King Adventure Kids","Yoga"],["Cosmic Kids Yoga Moana Adventure Children","Yoga"],["Cosmic Kids Yoga Unicorn Adventure Kids","Yoga"],["Cosmic Kids Yoga Sleeping Beauty Relaxation","Calm"],["Cosmic Kids Yoga Morning Wake Up Stretch","Movement"]]},
+{id:"sesame",s:"social",n:"Sesame Street Autism Initiative",e:"🧡",c:"var(--amber)",
+ who:"Sesame Workshop · Georgetown University validated · Non-profit",
+ sub:"Julia the Muppet · Free bilingual resources",
+ url:"https://www.youtube.com/@SesameStreet",
+ conds:["autism","inclusion","social communication","Down syndrome"],
+ d:"Introduced Julia, a 4-year-old Muppet with autism. Georgetown University study showed watching Julia significantly increased knowledge, acceptance and hope in both parents of autistic children and neurotypical children.",
+ y:"Show Julia videos to siblings, classmates and family to build natural, unselfconscious inclusion and acceptance. The free bilingual resource library at sesameworkshop.org/autism is outstanding.",
+ tags:["social-emotional","autism","inclusion","diversity","acceptance"],
+ v:[["Sesame Street Meet Julia Autistic Muppet Episode","Autism"],["Sesame Street Elmo and Julia Play Together","Social"],["Sesame Street Amazing Song about Children","Inclusion"],["Sesame Street Julia and Friends Episode","Autism"],["Sesame Street Elmo Talks about Feelings","Emotions"],["Sesame Street Same and Different Julia","Inclusion"],["Sesame Street Julia Paints a Picture","Creativity"],["Sesame Street Big Bird Learns about Autism","Awareness"]]},
+{id:"howard",s:"social",n:"Howard B Wigglebottom",e:"🐰",c:"var(--green)",
+ who:"Howard Binkow · Award-winning animated stories · Social-emotional learning",
+ sub:"Award-winning · Top-ranked for special education classrooms",
+ url:"https://www.youtube.com/@HowardBWigglebottom",
+ conds:["autism","ADHD","social communication","emotional regulation","Down syndrome"],
+ d:"Award-winning animated stories for preschool to early elementary children, focusing on life lessons and social-emotional learning. Consistently ranked in the top channels for special education classrooms worldwide.",
+ y:"The animated story format works exceptionally well for children who need to see social scenarios played out — visual learning of social rules that are very difficult to explain verbally.",
+ tags:["social-emotional","life skills","emotions","listening","sharing","kindness"],
+ v:[["Howard B Wigglebottom Listens to His Heart","Emotions"],["Howard B Wigglebottom Learns to Listen","Listening"],["Howard B Wigglebottom Too Much Tooting","Social Rules"],["Howard B Wigglebottom Problem Too Big to Handle","Coping"],["Howard B Wigglebottom Learns to Feel Same and Different","Identity"],["Howard B Wigglebottom Blends In","Inclusion"],["Howard B Wigglebottom Says Please and Thank You","Manners"],["Howard B Wigglebottom Gets Mad","Regulation"],["Howard B Wigglebottom Learns About Bullying","Safety"],["Howard B Wigglebottom On Being Brave","Courage"]]},
+{id:"alphablocks",s:"literacy",n:"Alphablocks",e:"🔤",c:"var(--teal)",
+ who:"BBC · BAFTA-winning · Phonics · Renewed until 2027",
+ sub:"Millions of views · The most effective phonics show ever made",
+ url:"https://www.youtube.com/@Alphablocks",
+ conds:["speech delay","dyslexia","autism","Down syndrome","hearing differences"],
+ d:"BAFTA-winning BBC show teaching phonics. Characters hold hands to blend sounds into words, visually showing exactly how reading and speech are built from individual sounds. Renewed until 2027.",
+ y:"Phonics teaches the sounds letters make — crucial for both reading and speech production. Watch how sounds blend into words. This helps children see how language is built.",
+ tags:["literacy","phonics","blending","bbc","bafta","reading","sounds"],
+ v:[["Alphablocks Learn Letter Sounds BBC Phonics","Phonics"],["Alphablocks Word Blending Learn to Read","Blending"],["Alphablocks Full Episodes Series 1 Children","Phonics"],["Alphablocks CVC Words Short Vowel Sounds BBC","Reading"],["Alphablocks Learn to Read with Letter Blends","Literacy"],["Alphablocks Magic E Words for Kids","Phonics"],["Alphablocks Digraphs CH SH TH Children","Phonics"],["Alphablocks Long Vowel Sounds for Kids","Phonics"],["Alphablocks Sight Words Children","Reading"],["Alphablocks Rhyming Words Kids","Phonics"]]},
+{id:"numberblocks",s:"literacy",n:"Numberblocks",e:"🔢",c:"var(--blue)",
+ who:"BBC · BAFTA-winning · Maths · Renewed until 2027",
+ sub:"Millions of views · Visualises HOW numbers actually work",
+ url:"https://www.youtube.com/@Numberblocks",
+ conds:["autism","Down syndrome","speech delay","visual learners","dyscalculia"],
+ d:"BAFTA-winning BBC show that visualises HOW maths works. Animated number characters combine and split showing 5 = 2 + 3 visually. Excellent for visual learners and children with Down syndrome.",
+ y:"Point and count together every time you watch. Visual counting builds the number-symbol connection that verbal counting alone cannot achieve.",
+ tags:["literacy","numbers","maths","visual","bbc","bafta","counting"],
+ v:[["Numberblocks Learn to Count 1 to 10 BBC","Counting"],["Numberblocks Addition and Subtraction Kids","Maths"],["Numberblocks Full Episodes Series 1 Children","Numbers"],["Numberblocks Making Ten Children BBC","Maths"],["Numberblocks Patterns and Sequences Kids","Patterns"],["Numberblocks Number Bonds Children","Maths"],["Numberblocks Counting by 2s Kids","Counting"],["Numberblocks Zero Episode Children","Numbers"],["Numberblocks One Hundred Episode BBC","Numbers"]]},
+{id:"scratch",s:"literacy",n:"Scratch Garden",e:"👁",c:"var(--blue)",
+ who:"Minimal distractions · High-contrast visuals · SLP recommended",
+ sub:"Millions of views · Structured, predictable, low stimulation",
+ url:"https://www.youtube.com/@ScratchGarden",
+ conds:["autism","sensory needs","visual learners","Down syndrome","speech delay"],
+ d:"Minimal distractions, structured repetition and high-contrast clear visuals. Specifically recommended by SLPs for autism, sensory processing differences and cognitive delays.",
+ y:"The structured and predictable format reduces anxiety and increases engagement. Minimal distractions allow complete focus on the language being presented.",
+ tags:["literacy","colours","shapes","numbers","low stimulation","autism","visual"],
+ v:[["Scratch Garden The Colours Song for Kids","Colours"],["Scratch Garden The Shapes Song Children","Shapes"],["Scratch Garden Numbers 1 to 20 Toddlers","Numbers"],["Scratch Garden Days of the Week Song Kids","Routine"],["Scratch Garden Body Parts Song Children","Body Parts"],["Scratch Garden ABC Alphabet Song Kids","Literacy"],["Scratch Garden Counting Vegetables Toddlers","Counting"],["Scratch Garden Animals Song Children","Animals"],["Scratch Garden Opposites Song Kids","Vocabulary"],["Scratch Garden Seasons Song Children","Vocabulary"]]},
+{id:"blippi",s:"explore",n:"Blippi",e:"🟠",c:"var(--amber)",
+ who:"Educational exploration · Real-world vocabulary · 20M subscribers",
+ sub:"20M+ subscribers · Watch together and narrate everything",
+ url:"https://www.youtube.com/@Blippi",
+ conds:["speech delay","autism","late talker","language delay"],
+ d:"Energetic field trips to farms, construction sites, museums, playgrounds and more. Children build rich real-world vocabulary through exploration. Best watched with a parent who pauses and names things.",
+ y:"Watch together. Pause and ask: What is that? Then model the answer yourself. After watching, visit a similar real place and use the same vocabulary — transfer learning.",
+ tags:["explore","vocabulary","real world","curiosity","vehicles","animals"],
+ v:[["Blippi Explores the Farm Animals Children","Farm"],["Blippi at the Playground Kids","Play"],["Blippi Construction Vehicles Toddlers","Vehicles"],["Blippi at the Zoo Animals Children","Animals"],["Blippi Fire Trucks for Children Vehicles","Vehicles"],["Blippi at the Beach Ocean Toddlers","Nature"],["Blippi Ice Cream Truck Kids","Vocabulary"],["Blippi at the Aquarium Children","Nature"],["Blippi Learns Colours Toddlers","Colours"],["Blippi Counts to 10 at the Farm","Numbers"],["Blippi at the Grocery Store Kids","Vocabulary"],["Blippi Museum of Discovery Children","Explore"]]},
+{id:"heybear",s:"explore",n:"Hey Bear Sensory",e:"🐻",c:"var(--amber)",
+ who:"Calming sensory videos · No dialogue · Ages 0-3",
+ sub:"Millions of views · Most recommended calming channel",
+ url:"https://www.youtube.com/@HeyBearSensory",
+ conds:["autism","sensory needs","nonverbal","cerebral palsy","Down syndrome","premature babies"],
+ d:"Calming sensory-rich videos with colourful fruits, vegetables and animals moving to soothing music. No dialogue, no demands. Specifically recommended for neurodivergent children and premature babies.",
+ y:"Use before speech practice or at transition times. A sensory-regulated child communicates significantly more. This is active regulation support, not passive entertainment.",
+ tags:["sensory","calm","visual","low stimulation","neurodivergent","regulation"],
+ v:[["Hey Bear Sensory Dancing Vegetables Calming Video","Sensory"],["Hey Bear Sensory Dancing Fruits Soothing Babies","Sensory"],["Hey Bear Sensory Farm Animals Video Toddlers","Animals"],["Hey Bear Sensory Rainbow Colours Video Children","Colours"],["Hey Bear Sensory Ocean Sea Creatures Babies","Nature"],["Hey Bear Sensory Nursery Rhymes Calming Kids","Songs"],["Hey Bear Sensory Butterflies and Flowers","Nature"],["Hey Bear Sensory Dinosaurs Video Babies","Animals"],["Hey Bear Sensory Autumn Leaves Calming","Nature"],["Hey Bear Sensory Christmas Video Babies","Seasonal"],["Hey Bear Sensory Easter Video Toddlers","Seasonal"],["Hey Bear Sensory Fruit Dance Babies","Sensory"]]},
+{id:"puffin",s:"explore",n:"Puffin Rock",e:"🐦",c:"var(--teal)",
+ who:"Narrated nature series · Gentle pace · Ages 2-5 · Netflix original",
+ sub:"Netflix original · Rich vocabulary · No conflict or fast cuts",
+ url:"https://www.youtube.com/@PuffinRock",
+ conds:["autism","sensory needs","speech delay","language development"],
+ d:"Beautifully animated nature series following Oona the puffin chick. Gentle narration, stunning visuals, slow pace and rich nature vocabulary. No conflict, no sudden movements, no fast cuts.",
+ y:"Rich nature vocabulary in context is far more effective than flashcards. Every episode introduces real vocabulary — puffin, burrow, migration, fledgling — in a meaningful narrative.",
+ tags:["explore","nature","vocabulary","gentle","calm","low stimulation","rich language"],
+ v:[["Puffin Rock Oona and the Tide Pool Episode","Nature"],["Puffin Rock The Big Adventure Episode Kids","Nature"],["Puffin Rock Oona Makes a Friend Episode","Social"],["Puffin Rock Stormy Night Episode Children","Nature"],["Puffin Rock Full Episode Collection Toddlers","Nature"],["Puffin Rock Oona and the New Baby Episode","Social"],["Puffin Rock Finding Food Episode Kids","Nature"],["Puffin Rock The Migration Episode Children","Nature"]]},
+{id:"natgeo",s:"explore",n:"Nat Geo Kids",e:"🦁",c:"var(--amber)",
+ who:"National Geographic · Real animals · Real environments · Ages 3+",
+ sub:"6M+ subscribers · Real footage builds richer vocabulary than cartoons",
+ url:"https://www.youtube.com/@NatGeoKids",
+ conds:["speech delay","autism","language development","late talker"],
+ d:"Real animals, real environments, real vocabulary. National Geographic Kids brings the natural world to children through stunning footage and age-appropriate narration.",
+ y:"Real animals build richer, more specific vocabulary than cartoons. Name every animal, sound and action together as you watch. Children who love animals are highly motivated learners.",
+ tags:["explore","animals","nature","vocabulary","real world","science","documentary"],
+ v:[["National Geographic Kids Amazing Animals Children","Animals"],["National Geographic Kids Ocean Animals Toddlers","Nature"],["National Geographic Kids Baby Animals Kids","Animals"],["National Geographic Kids Big Cats Facts Children","Animals"],["National Geographic Kids Dinosaur Facts Kids","Science"],["National Geographic Kids Sharks Facts Children","Nature"],["National Geographic Kids Penguins for Kids","Animals"],["National Geographic Kids Elephants Children","Animals"],["National Geographic Kids Dogs and Puppies Kids","Animals"],["National Geographic Kids Birds of the World Kids","Nature"]]}
+];
+var SECS=[
+ {t:"🌱 First Words & Speech",s:"Evidence-based channels for building first words and early communication — including two channels run by licensed SLPs who designed every activity with therapeutic intent.",sec:"speech"},
+ {t:"🤟 Signing & AAC Communication",s:"For nonverbal and minimally speaking children. Research confirms: signing accelerates speech, it does not delay it. AAC gives every child a voice before words arrive.",sec:"signing"},
+ {t:"🎓 For Parents — Learn and Apply",s:"You have more hours with your child than any therapist ever will. Learn exactly what certified SLPs do — and apply it at home every day.",sec:"parent"},
+ {t:"🎵 Songs and Music Therapy",s:"Music activates the same neural pathways as language. Every channel here was selected by SLPs for its direct speech and language benefit — not just entertainment.",sec:"songs"},
+ {t:"🧡 Social-Emotional and Regulation",s:"A regulated child communicates significantly more. These channels build the emotional vocabulary, regulation strategies and social understanding that make communication possible.",sec:"social"},
+ {t:"🔠 Literacy and Cognitive",s:"BAFTA-winning BBC shows for phonics and maths, plus low-stimulation visual learning designed for autism. Phonics directly supports speech sound development.",sec:"literacy"},
+ {t:"🌍 Exploration, Nature and Sensory",s:"Real-world vocabulary through exploration and calming sensory content for regulation. Hey Bear Sensory is used clinically as a regulation tool before speech practice sessions.",sec:"explore"},
+];
+</script>
+<script>
+
+var APPS=[
+{sec:"🗣️ AAC Communication Apps",items:[
+ {i:"💬",n:"Cboard",b:"Free · All devices · Open-source",d:"Free open-source AAC for any device. No subscription, no cost, no ads ever. Web-based so it works on any device including budget Android tablets.",p:[["FREE","var(--teal)"],["All Devices","var(--blue)"],["Open Source","var(--purple)"]],u:"https://www.cboard.io"},
+ {i:"🗣️",n:"LetMeTalk",b:"Android · Completely Free · PECS-based",d:"Free picture-based AAC for Android. Over 9,000 PECS images. Downloaded by millions of families worldwide. No account required.",p:[["FREE","var(--teal)"],["Android","var(--green)"],["PECS Images","var(--blue)"]],u:"https://play.google.com/store/apps/details?id=de.appnotize.letmetalk"},
+ {i:"🗣️",n:"Avaz AAC",b:"iOS & Android · 4.8 Stars · TED Talk featured",d:"4.8 stars with 9,000+ parent reviews. Featured in a TED Talk and MIT Top 35 Innovations. 40,000+ pictures and natural voices. Parents of nonspeaking children call it life-changing.",p:[["Free Trial","var(--teal)"],["4.8 Stars","var(--amber)"],["TED Talk","var(--purple)"]],u:"https://www.avazapp.com"},
+ {i:"🎯",n:"Proloquo2Go",b:"iOS · Global Gold Standard · 9,000+ reviews",d:"#1 professional AAC app worldwide. Used in schools and therapy globally. For autism, cerebral palsy, Down syndrome and apraxia. Discounted every April for Autism Awareness Month. Check your insurance.",p:[["Paid","var(--amber)"],["iOS","var(--blue)"],["SLP Standard","var(--purple)"],["Check Insurance","var(--green)"]],u:"https://www.assistiveware.com/products/proloquo2go"},
+ {i:"💡",n:"Otsimo AAC",b:"iOS & Android · Free version · Works offline",d:"Natural-sounding voices, 1,700+ words preinstalled, verb conjugation support. No ads. Works fully offline. Suitable for autism, cerebral palsy, apraxia and Down syndrome.",p:[["Free Version","var(--teal)"],["iOS+Android","var(--green)"],["Works Offline","var(--blue)"]],u:"https://otsimo.com/en/aac/"},
+ {i:"📱",n:"Goally",b:"iOS & Android · All-in-one",d:"All-in-one: AAC communication, visual schedules, first-then boards, 100+ therapy games, social skills videos and self-care routines. Recommended for autism and ADHD families.",p:[["Free Version","var(--teal)"],["All-in-One","var(--purple)"],["iOS+Android","var(--green)"]],u:"https://goally.com"},
+ {i:"💬",n:"iCommunicate",b:"iOS · 5 Stars",d:"5-star rated. Visual schedules, AAC boards, routines, flashcards, picture boards and speech cards all in one app. Recommended for autism and cerebral palsy.",p:[["Paid","var(--amber)"],["5 Stars","var(--amber)"],["iOS","var(--blue)"]],u:"https://www.grembe.com/icommunicate"},
+ {i:"🔊",n:"TouchChat HD with WordPower",b:"iOS · Schools and therapy worldwide",d:"Comprehensive AAC with WordPower vocabulary. Used in schools and therapy worldwide. Works with switches and eye gaze for children with motor difficulties including cerebral palsy.",p:[["Paid","var(--amber)"],["iOS","var(--blue)"],["Switch Access","var(--purple)"]],u:"https://touchchatapp.com"},
+ {i:"📲",n:"CoughDrop",b:"Free tier · All devices · Collaborative",d:"Cloud-based open-source AAC. Free tier available. Parents, SLPs and teachers collaborate on the same boards across any device. Supports switches and eye gaze.",p:[["Free Tier","var(--teal)"],["All Devices","var(--blue)"],["Collaborative","var(--green)"]],u:"https://www.coughdrop.com"},
+ {i:"🎙️",n:"LAMP Words for Life",b:"iOS · Motor planning · Apraxia specialist",d:"Language Acquisition through Motor Planning. Research-backed for children with apraxia and autism. Consistent motor patterns build reliable communication over time.",p:[["Paid","var(--amber)"],["iOS","var(--blue)"],["Motor Planning","var(--purple)"]],u:"https://www.worcestersolutions.com/lamp"},
+{i:"🔵",n:"Snap Core First",b:"iOS & Android · Tobii Dynavox · School standard",d:"The second most used AAC app in schools worldwide after Proloquo2Go. Made by Tobii Dynavox — the world's largest AAC manufacturer. Grid-based symbol communication with robust vocabulary, symbol-based navigation and switch access. Used extensively for autism, cerebral palsy and Down syndrome in both school and clinical settings.",p:[["Paid","var(--amber)"],["iOS+Android","var(--blue)"],["School Standard","var(--purple)"],["Switch Access","var(--green)"]],u:"https://www.tobiidynavox.com/software/snap-core-first/"},
+{i:"🟣",n:"Twinkl Symbols AAC",b:"FREE · iOS & Android · 8,000+ symbols",d:"Free AAC app with over 8,000 symbols and 100 ready-made templates for communication boards and books. One of the most symbol-rich free AAC tools available. Comes with 24/7 support. Recommended by SLPs as an accessible starting point for families exploring AAC before committing to a paid system.",p:[["FREE","var(--teal)"],["iOS+Android","var(--green)"],["8,000+ Symbols","var(--blue)"]],u:"https://www.twinkl.com/resources/twinkl-symbols"},
+]},
+{sec:"🎙️ Speech, Language and Learning",items:[
+ {i:"🌟",n:"Khan Academy Kids",b:"iOS & Android · Completely FREE · No ads ever",d:"No ads and no subscription ever. Ages 2-7. Reading, maths, social-emotional learning and language. Praised by SLPs as one of the best free apps for daily home practice.",p:[["FREE","var(--teal)"],["No Ads Ever","var(--green)"],["iOS+Android","var(--green)"]],u:"https://learn.khanacademy.org/khan-academy-kids/"},
+ {i:"🧩",n:"Keiki World",b:"iOS & Android · kidSAFE Certified",d:"kidSAFE Certified and Mom's Choice Award winner. 1,500+ activities including speech cards, phonics, maths and life skills. Used in 170+ countries by parents of speech-delayed children.",p:[["Free Trial","var(--teal)"],["kidSAFE","var(--green)"],["170+ Countries","var(--blue)"]],u:"https://keiki.app"},
+ {i:"📺",n:"Speech Blubs",b:"iOS & Android · Video modelling",d:"Video modelling where real children say words and your child imitates. 1,500+ activities with speech recognition feedback. Used by SLPs with autism, Down syndrome and speech delays.",p:[["Free Trial","var(--teal)"],["Video Modelling","var(--blue)"],["SLP Used","var(--purple)"]],u:"https://speechblubs.com"},
+ {i:"🧩",n:"MITA",b:"iOS · FREE · Pediatrician-approved · 4.5 stars",d:"Mental Imagery Therapy for Autism based on Pivotal Response Treatment. 4.5 stars. Interactive puzzles targeting autism-specific cognitive challenges. Free.",p:[["FREE","var(--teal)"],["4.5 Stars","var(--amber)"],["Research-Based","var(--purple)"]],u:"https://grasshopperapps.com/mita"},
+ {i:"🔤",n:"See Touch Learn",b:"iOS · FREE · SLP recommended",d:"By Brain Parade. Recommended by SLPs for language development, visual perception and matching skills. Customisable flashcards and activities used in schools and therapy.",p:[["FREE","var(--teal)"],["SLP Recommended","var(--purple)"],["iOS","var(--blue)"]],u:"https://brainparade.com"},
+ {i:"⭐",n:"Starfall",b:"iOS · Android · Web · FREE",d:"Free phonics, reading and maths used by schools nationwide. Excellent for autism. Preschool through 3rd grade. Multiple sensory modalities — visual, auditory and interactive.",p:[["FREE","var(--teal)"],["School-Used","var(--purple)"],["All Platforms","var(--green)"]],u:"https://www.starfall.com"},
+ {i:"🌱",n:"Endless Alphabet",b:"iOS · Android · Vocabulary puzzles",d:"Vocabulary through interactive animated word puzzles. Each word is illustrated with a funny animation encoding its meaning. Excellent for visual learners.",p:[["Paid","var(--amber)"],["iOS+Android","var(--green)"],["Visual Learning","var(--blue)"]],u:"https://www.originatorkids.com"},
+ {i:"🐣",n:"Peekaboo Barn",b:"iOS · Low cost · First sounds",d:"Animal makes its sound then reveals itself. Perfect for first animal sounds — often a child's very first vocalisations. Simple satisfying cause-and-effect interaction.",p:[["Low Cost","var(--amber)"],["iOS","var(--blue)"],["First Sounds","var(--green)"]],u:"https://apps.apple.com/us/app/peekaboo-barn/id300590611"},
+ {i:"🎮",n:"Otsimo Educational Games",b:"iOS & Android · ABA-based · 50+ games",d:"50+ ABA-based educational games for children with autism, Down syndrome and cerebral palsy. Difficulty adjusts automatically. Used by therapists and parents worldwide.",p:[["Free Version","var(--teal)"],["ABA-Based","var(--purple)"],["iOS+Android","var(--green)"]],u:"https://otsimo.com/en/autism/"},
+{i:"🔤",n:"Articulation Station Pro",b:"iOS · Created by a licensed SLP · Clinical standard",d:"Created by a licensed SLP at Little Bee Speech. Targets all 22 English consonant sounds with 1,200+ real photo flashcards, rotating sentences and interactive stories. Children progress through word, phrase, sentence and story levels with voice recording for immediate feedback. Widely used in clinical settings and recommended on ASHA Community forums as the gold standard for phoneme practice at home.",p:[["Paid","var(--amber)"],["iOS","var(--blue)"],["SLP Created","var(--purple)"],["22 Sounds","var(--green)"]],u:"https://www.littlebeespeech.com/articulation-station.html"},
+{i:"👾",n:"Splingo's Language Universe",b:"iOS & Android · SLP-developed · Listening and language",d:"Developed by speech-language pathologists. Splingo the Alien guides children through activities targeting listening comprehension, language understanding and vocabulary through animations and a reward-based system. Highly recommended for children with language delays and auditory processing differences who need low-pressure, engaging language practice.",p:[["Paid","var(--amber)"],["iOS+Android","var(--green)"],["SLP-Developed","var(--purple)"]],u:"https://www.splingo.com"},
+]},
+{sec:"🗓️ Visual Schedules, Behaviour and Wellbeing",items:[
+ {i:"📅",n:"First Then Visual Schedule HD",b:"iOS · ABA therapy standard",d:"First this, then that — reduces transition anxiety which is a major barrier to communication. Used in ABA therapy and speech therapy worldwide.",p:[["Paid","var(--amber)"],["ABA Standard","var(--purple)"],["Reduces Anxiety","var(--green)"]],u:"https://apps.apple.com/us/app/first-then-visual-schedule-hd/id355527801"},
+ {i:"✅",n:"Choiceworks",b:"iOS · Visual scheduling for transitions",d:"Visual scheduling for daily routines, transitions and waiting. Highly recommended for autism and sensory processing differences. Includes a waiting board and a feelings board.",p:[["Paid","var(--amber)"],["iOS","var(--blue)"],["Transitions","var(--green)"]],u:"https://apps.apple.com/us/app/choiceworks/id493619842"},
+ {i:"📖",n:"Social Story Creator",b:"iOS · Touch Autism · Personalised stories",d:"Create personalised social stories — short narratives that teach social situations, transitions, coping strategies and expected behaviours. Essential for neurodivergent children.",p:[["Paid","var(--amber)"],["Social Stories","var(--purple)"],["iOS","var(--blue)"]],u:"https://touchautism.com/app/social-story-creator-library"},
+ {i:"🧘",n:"GoNoodle",b:"iOS & Android · FREE · Regulation",d:"Movement, mindfulness and self-regulation through engaging videos and activities. Helps children become calm and ready to communicate. Used in schools for ADHD and autism.",p:[["FREE","var(--teal)"],["iOS+Android","var(--green)"],["Schools Use","var(--purple)"]],u:"https://www.gonoodle.com"},
+ {i:"🎨",n:"Do2Learn",b:"Web · FREE · Decades of professional use",d:"Free visual supports, schedules, social stories and activities. Used by SLPs and special education teachers for decades. Hundreds of free printable resources.",p:[["FREE","var(--teal)"],["Printable","var(--purple)"],["Web-Based","var(--blue)"]],u:"https://do2learn.com"},
+ {i:"⏱️",n:"Time Timer",b:"iOS & Android · Visual time for transitions",d:"Visual timer showing time passing as a shrinking coloured disk. Makes abstract time concrete and visible. Highly recommended for autism and ADHD to reduce transition anxiety.",p:[["Low Cost","var(--amber)"],["iOS+Android","var(--green)"],["Visual Time","var(--blue)"]],u:"https://www.timetimer.com"},
+{i:"🗺️",n:"Routinely",b:"iOS & Android · Visual routine builder",d:"Drag and drop visual routine creator with pictures, timers and step-by-step guides. Highly recommended for autistic children and ADHD to build daily independence.",p:[["Free Version","var(--teal)"],["iOS+Android","var(--green)"],["Visual Routines","var(--purple)"]],u:"https://www.routinelyapp.com"},
+{i:"🎯",n:"iCreate Social Skills Stories",b:"iOS · Social story builder",d:"Create personalised social stories with your own photos and text. Teach expected behaviours, transitions and new situations through visual narrative. Used by SLPs worldwide.",p:[["Low Cost","var(--amber)"],["iOS","var(--blue)"],["Social Stories","var(--purple)"]],u:"https://apps.apple.com/us/app/icreate-social-skills-stories/id533156220"},
+{i:"🧩",n:"Autism Tracker Pro",b:"iOS & Android · Behaviour tracking",d:"Track behaviours, triggers, sleep, mealtimes and communication patterns. Helps parents and therapists identify patterns and measure real progress over time.",p:[["Low Cost","var(--amber)"],["iOS+Android","var(--green)"],["Progress Tracking","var(--blue)"]],u:"https://apps.apple.com/us/app/autism-tracker-pro/id512345678"},
+]},
+{sec:"🌐 Free Websites and Online Tools",items:[
+ {i:"📋",n:"Communication Matrix",b:"FREE · SLP assessment used worldwide",d:"Free assessment used by SLPs worldwide to track communication from the earliest pre-symbolic levels through to full language. Know exactly where your child is and what to target next.",p:[["FREE","var(--teal)"],["SLP Assessment","var(--purple)"],["Used Worldwide","var(--green)"]],u:"https://communicationmatrix.org"},
+ {i:"🌐",n:"Speech And Language Kids",b:"FREE · Most comprehensive free SLP website",d:"The most comprehensive free speech therapy website online. Hundreds of articles, guides, printables and AAC resources covering every area and every condition.",p:[["FREE","var(--teal)"],["Printables","var(--blue)"],["Every Condition","var(--purple)"]],u:"https://www.speechandlanguagekids.com"},
+ {i:"📚",n:"PrAACtical AAC",b:"FREE · Two SLP professors · Most trusted AAC site",d:"Research-based AAC articles by two SLP professors. The most trusted free AAC resource website online. Essential reading for any family exploring AAC.",p:[["FREE","var(--teal)"],["Research-Based","var(--purple)"],["AAC Experts","var(--blue)"]],u:"https://praacticalaac.org"},
+ {i:"🤟",n:"Handspeak ASL Dictionary",b:"FREE · Video dictionary for any sign",d:"Free comprehensive ASL video dictionary. Look up any word and watch a clear video demonstration. Essential for families learning to sign alongside speech.",p:[["FREE","var(--teal)"],["ASL Video","var(--blue)"],["Any Sign","var(--green)"]],u:"https://www.handspeak.com"},
+ {i:"🏥",n:"ASHA Find an SLP",b:"FREE · Official tool to find certified SLPs",d:"Official American Speech-Language-Hearing Association tool to find a certified SLP near you. The most reliable way to find qualified professional help.",p:[["FREE","var(--teal)"],["Official ASHA","var(--blue)"],["Near You","var(--green)"]],u:"https://www.asha.org/public/speech/disorders/"},
+ {i:"📖",n:"Tar Heel Reader",b:"FREE · 40,000+ books · AAC compatible",d:"Free accessible books on any topic, speech-enabled. Works with AAC devices, switches and eye gaze. Over 40,000 books. You can create custom books for your child.",p:[["FREE","var(--teal)"],["AAC Compatible","var(--purple)"],["40,000+ Books","var(--blue)"]],u:"https://tarheelreader.org"},
+ {i:"🧡",n:"Sesame Street Autism Initiative",b:"FREE · Bilingual · Georgetown validated",d:"Free bilingual resources, Julia the Muppet videos, printables and social stories. Georgetown University validated. Outstanding library at sesameworkshop.org/autism.",p:[["FREE","var(--teal)"],["Bilingual","var(--amber)"],["Georgetown Validated","var(--purple)"]],u:"https://sesameworkshop.org/topics/autism/"},
+ {i:"🎓",n:"Teach Me To Talk Website",b:"FREE · Free e-book · Laura Mize CCC-SLP",d:"Free therapy tips, e-book and video resources for families of toddlers with language delays. The free e-book alone saves many hours of research.",p:[["FREE","var(--teal)"],["Free E-Book","var(--purple)"],["Since 2008","var(--blue)"]],u:"https://teachmetotalk.com"},
+ {i:"💙",n:"Autism Speaks Resource Library",b:"FREE · Comprehensive family resources",d:"One of the most visited autism family resource libraries in the world. Includes a comprehensive AAC guide written for parents, early intervention checklists by age, a therapy provider directory and a community helpline. The AAC guide alone is recommended as required reading by many SLPs.",p:[["FREE","var(--teal)"],["Family Resources","var(--blue)"],["AAC Guides","var(--purple)"]],u:"https://www.autismspeaks.org/resource-library"},
+ {i:"🌍",n:"Rachel Madel Free Downloads",b:"FREE · AAC specialist downloads",d:"Free AAC resources, communication board templates and parent guides from internationally recognised AAC specialist Rachel Madel. Focused on nonspeaking children.",p:[["FREE Downloads","var(--teal)"],["AAC Boards","var(--blue)"],["Nonspeaking","var(--purple)"]],u:"https://www.rachelmadel.com"},
+ {i:"📋",n:"AssistiveWare Learn AAC",b:"FREE · Implementation guides in English and Spanish",d:"Free AAC implementation guides, activity ideas and visual support downloads from the makers of Proloquo2Go. Available in English and Spanish.",p:[["FREE","var(--teal)"],["Implementation Guide","var(--blue)"],["Bilingual","var(--amber)"]],u:"https://www.assistiveware.com/learn-aac"},
+ {i:"🏛️",n:"National Down Syndrome Society",b:"FREE · NDSS · Early intervention guides",d:"Free comprehensive early intervention resources specifically for Down syndrome from the NDSS. Speech therapy guides, milestone information and professional directories.",p:[["FREE","var(--teal)"],["Down Syndrome","var(--blue)"],["Early Intervention","var(--green)"]],u:"https://ndss.org/resources"},
+ {i:"⚡",n:"Apraxia Kids Website",b:"FREE · World's leading apraxia resource",d:"The world's leading free resource for Childhood Apraxia of Speech. Family guides, therapy information, professional directory and parent community. Essential for CAS families.",p:[["FREE","var(--teal)"],["Apraxia Specialist","var(--purple)"],["Family Guides","var(--blue)"]],u:"https://www.apraxia-kids.org"},
+]},
+];
+var TIPS=[
+[1,"Follow their lead — every single time","Let them choose the activity. Children who direct play communicate far more. Comment on what they do — never test them. Observe and respond with warmth and enthusiasm."],
+[2,"Narrate your entire day out loud","I am turning on the tap. Cold water. Squeeze the soap. Self-talk builds vocabulary with zero pressure on the child. Do it from morning to bedtime, every single day."],
+[3,"The 10-second pause — count silently","After speaking, look at them expectantly and count to 10 in your head before speaking again. Silence IS the opportunity. Most parents fill it too quickly. Your child needs that space."],
+[4,"4 comments for every 1 question","Ball! Round red ball! Rolling fast! feels safe. What is this? feels like a test. Four comments before every question — this ratio comes directly from the research on optimal language input."],
+[5,"Model AAC before expecting them to use it","YOU use the board all day first. They learn by watching you — not by being told to. Never say use your device. Model it quietly and consistently every single day."],
+[6,"Create communication needs deliberately","Snack in a bag they cannot open. Favourite toy out of reach. Give a tiny amount then wait. Motivation to communicate is the engine of all language development."],
+[7,"Self-talk and parallel talk — all day","Self-talk: narrate your own actions. Parallel talk: narrate their actions. I see you pushing the car! It goes fast! This is the most natural, pressure-free language input available."],
+[8,"Sing every day — with intentional gaps","Old MacDonald had a ___ and wait. Music activates speech in children who are silent during other activities. Gaps invite them to participate. Celebrate every attempt."],
+[9,"Read the same book 50 times","Each re-read builds vocabulary, prediction and comprehension. Pause before the last word on each page. They may fill it in. Every re-read counts more than a new book."],
+[10,"Expand everything they say or communicate","They say ball — you say big ball. They point to cup — you say blue cup, you want the cup! Expansions add one element of language to whatever they produce. This is the most evidence-based daily strategy."],
+[11,"15 minutes of pure floor play every day","No phone. No TV. No agenda. Follow their lead. Get on the floor and play. Comment on everything. These 15 minutes done daily are irreplaceable by any app, channel or resource."],
+[12,"Celebrate every communication attempt","Pointing, reaching, eye contact, sounds, gestures — celebrate all of these as warmly as you would celebrate a perfect first word. Enthusiasm teaches: communicating is wonderful."],
+[13,"Visuals everywhere in your home","Picture labels on food containers, toy boxes and doors. A visual schedule on the wall. A communication board in every room. Visuals help them understand their world before words arrive."],
+[14,"Routine language — same words every time","Identical words at every bath, every meal, every bedtime. Bath time! Shirt off. Into the water! Predictable language in predictable routines is acquired dramatically faster than novel language."],
+[15,"Imitation is the foundation — start there","Before speech comes imitation. Before imitation of sounds comes imitation of actions. Start with clapping, waving, pointing. Once actions are imitated reliably, sounds become possible."],
+[16,"Ask the SLP for this week's ONE specific goal","What is the one thing I should practise every day this week? Then do exactly that one thing every single day. You have far more hours with them than any therapist ever will."],
+[17,"Use communication temptations","Blow a bubble then hold the wand and wait. Wind up a toy then hold it and look at them. Give them something wrong — a fork with cereal. These create irresistible communication moments."],
+[18,"Joint attention first — always","Joint attention — looking at the same thing at the same time — must come before language. Build it through pointing at things, following their gaze and eye contact over shared activities."],
+[19,"Regulate before you communicate","A dysregulated child cannot communicate. Before any speech practice, make sure they are calm and regulated. Hey Bear Sensory, Cosmic Kids or a sensory activity first — then communication."],
+[20,"Trust the process — this takes time","Quiet periods of apparent plateau are followed by sudden leaps. Some days it will feel like nothing is working. Keep going. Every word you say, every sign you model, every pause you wait — it is all building. You are doing more than you will ever know."],
+];
+function q(id){return document.getElementById(id)}
+function yt(ch,title){return "https://www.youtube.com/results?search_query="+encodeURIComponent(ch+" "+title)}
+function bySec(sec){return CH.filter(function(c){return c.s===sec})}
+function byId(id){return CH.find(function(c){return c.id===id})}
+function mk(tag,cls){var e=document.createElement(tag);if(cls)e.className=cls;return e}
+function tx(s){return document.createTextNode(s)}
+function loadC(){try{return JSON.parse(localStorage.getItem("sb_v5_custom")||"{}")}catch(e){return{}}}
+function saveC(d){try{localStorage.setItem("sb_v5_custom",JSON.stringify(d))}catch(e){}}
+
+var curTab="home",curDet=null;
+function showPage(id){
+  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("on")});
+  var p=q("p-"+id);if(p)p.classList.add("on");
+  q("scrl").scrollTop=0;
+}
+function nav(t){
+  curTab=t;curDet=null;
+  document.querySelectorAll(".tab").forEach(function(b){b.classList.remove("on")});
+  var tab=q("t-"+t);if(tab)tab.classList.add("on");
+  q("btnBack").style.display="none";
+  showPage(t);
+}
+function goHome(){nav("home")}
+function openCh(id){curDet=id;buildDet(id);showPage("det");q("btnBack").style.display="block"}
+function goBack(){curDet=null;q("btnBack").style.display="none";nav(curTab)}
+
+var stmr;
+q("sinp").addEventListener("input",function(){
+  clearTimeout(stmr);var v=this.value;
+  stmr=setTimeout(function(){doSearch(v)},220);
+});
+function toggleSearch(){
+  var b=q("sbar");
+  if(b.classList.contains("on")){closeSearch()}
+  else{b.classList.add("on");q("sinp").focus()}
+}
+function closeSearch(){q("sbar").classList.remove("on");q("sinp").value="";if(curTab==="search")nav(curTab)}
+function doSearch(raw){
+  var v=(raw||"").trim().toLowerCase();
+  if(!v){closeSearch();return}
+  var res=CH.filter(function(c){
+    return (c.n+" "+c.d+" "+c.tags.join(" ")+" "+(c.conds||[]).join(" ")).toLowerCase().indexOf(v)!==-1;
+  });
+  q("sLabel").textContent=res.length?(res.length+" result"+(res.length!==1?"s":"")+" for \""+raw+"\""):"No results for \""+raw+"\"";
+  var grid=q("sgrid");grid.innerHTML="";
+  if(!res.length){
+    var em=mk("div","empty-msg");
+    em.appendChild(tx("Try: autism, Down syndrome, apraxia, AAC, signing, sensory, Bluey, Daniel Tiger, hey bear…"));
+    grid.appendChild(em);
+  } else {
+    res.forEach(function(c){
+      var card=mk("div","sc");card.onclick=function(){openCh(c.id)};
+      var top=mk("div","sc-top");top.style.background=c.c+"33";top.appendChild(tx(c.e));
+      var body=mk("div","sc-body");
+      var name=mk("div","sc-name");name.appendChild(tx(c.n));
+      var sub=mk("div","sc-sub");sub.style.color=c.c;sub.appendChild(tx(c.who.split("·")[0].trim()));
+      var desc=mk("div","sc-desc");desc.appendChild(tx(c.d.substring(0,90)+"…"));
+      body.appendChild(name);body.appendChild(sub);body.appendChild(desc);
+      card.appendChild(top);card.appendChild(body);grid.appendChild(card);
+    });
+  }
+  q("btnBack").style.display="block";
+  showPage("search");
+}
+
+function mkChCard(c){
+  var card=mk("div","chc");card.onclick=function(){openCh(c.id)};
+  var art=mk("div","chca");art.style.background=c.c+"25";art.appendChild(tx(c.e));
+  var body=mk("div","chcb");
+  var name=mk("div","chcn");name.style.color=c.c;name.appendChild(tx(c.n));
+  var sub=mk("div","chcs");sub.appendChild(tx(c.sub.split("·")[0].trim()));
+  if(c.conds&&c.conds.length){
+    var cp=mk("div","cond-pills");
+    c.conds.slice(0,2).forEach(function(cd){
+      var p=mk("span","cpill");p.style.background=c.c+"18";p.style.color=c.c;p.appendChild(tx(cd));cp.appendChild(p);
+    });
+    body.appendChild(name);body.appendChild(sub);body.appendChild(cp);
+  } else {
+    var badge=mk("div","chcbadge");badge.style.background=c.c+"18";badge.style.color=c.c;badge.appendChild(tx("Info & Videos"));
+    body.appendChild(name);body.appendChild(sub);body.appendChild(badge);
+  }
+  card.appendChild(art);card.appendChild(body);
+  return card;
+}
+
+function buildHome(){
+  var con=q("homeSecs");con.innerHTML="";
+  SECS.forEach(function(s){
+    var sec=mk("div","sec");
+    var hd=mk("div","sec-hd");
+    var left=mk("div","sl2");
+    var title=mk("div","st");title.appendChild(tx(s.t));
+    var sub=mk("div","ss");sub.appendChild(tx(s.s));
+    left.appendChild(title);left.appendChild(sub);hd.appendChild(left);
+    var mb=mk("button","more");mb.appendChild(tx("All →"));mb.onclick=function(){nav("ch")};hd.appendChild(mb);
+    sec.appendChild(hd);
+    var row=mk("div","row");
+    bySec(s.sec).forEach(function(c){row.appendChild(mkChCard(c))});
+    sec.appendChild(row);con.appendChild(sec);
+  });
+}
+
+function buildDet(id){
+  var c=byId(id);if(!c)return;
+  var custom=loadC();var myVids=custom[id]||[];
+  var con=q("detBody");con.innerHTML="";
+  var top=mk("div","det-top");
+  top.style.background="linear-gradient(155deg,var(--s1),"+c.c+"28)";
+  var emo=mk("div","det-emo");emo.appendChild(tx(c.e));
+  var info=mk("div","det-info");
+  var name=mk("div","det-name");name.appendChild(tx(c.n));
+  var who=mk("div","det-who");who.style.color=c.c;who.appendChild(tx(c.who));
+  var subs=mk("div","det-subs");subs.appendChild(tx(c.sub));
+  info.appendChild(name);info.appendChild(who);info.appendChild(subs);
+  if(c.conds&&c.conds.length){
+    var crw=mk("div");crw.style.cssText="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px";
+    c.conds.forEach(function(cd){
+      var b=mk("span");b.style.cssText="font-size:9px;font-weight:800;padding:3px 9px;border-radius:20px;text-transform:uppercase;background:"+c.c+"18;color:"+c.c;
+      b.appendChild(tx(cd));crw.appendChild(b);
+    });
+    info.appendChild(crw);
+  }
+  var desc=mk("div","det-desc");desc.appendChild(tx(c.d));info.appendChild(desc);
+  var ybtn=mk("a","det-yt");ybtn.href=c.url;ybtn.target="_blank";ybtn.rel="noopener";
+  ybtn.appendChild(tx("📺 Open "+c.n+" on YouTube"));info.appendChild(ybtn);
+  top.appendChild(emo);top.appendChild(info);con.appendChild(top);
+  var why=mk("div","why");var wb=mk("b");wb.appendChild(tx("💡 Why this channel? "));
+  why.appendChild(wb);why.appendChild(tx(c.y));con.appendChild(why);
+  if(c.tags&&c.tags.length){
+    var tr=mk("div","tag-row");
+    c.tags.forEach(function(t){
+      var tg=mk("span","ctag");tg.style.background=c.c+"15";tg.style.color=c.c;tg.appendChild(tx(t));tr.appendChild(tg);
+    });
+    con.appendChild(tr);
+  }
+  var totalVids=(c.v||[]).length+myVids.length;
+  var vl=mk("div","vlabel");
+  var vlt=mk("span");vlt.appendChild(tx("Videos ("+totalVids+") — tap any to open on YouTube"));
+  var addB=mk("button","addbtn");addB.appendChild(tx("+ Add Video"));
+  addB.onclick=function(){openModal(id)};
+  vl.appendChild(vlt);vl.appendChild(addB);con.appendChild(vl);
+  (c.v||[]).forEach(function(v){
+    var link=mk("a","vc");link.href=yt(c.n,v[0]);link.target="_blank";link.rel="noopener";
+    var vcl=mk("div","vcl");vcl.style.background=c.c+"20";
+    var vcp=mk("div","vcp");vcp.style.background=c.c;vcp.appendChild(tx("▶"));vcl.appendChild(vcp);
+    var vcr=mk("div","vcr");
+    var vct=mk("div","vct");vct.style.color=c.c;vct.appendChild(tx(v[1]));
+    var vtitle=mk("div","vctitle");vtitle.appendChild(tx(v[0]));
+    vcr.appendChild(vct);vcr.appendChild(vtitle);link.appendChild(vcl);link.appendChild(vcr);con.appendChild(link);
+  });
+  myVids.forEach(function(v){
+    var link=mk("a","vc");link.href=yt(c.n,v.t);link.target="_blank";link.rel="noopener";
+    var vcl=mk("div","vcl");vcl.style.background=c.c+"20";
+    var vcp=mk("div","vcp");vcp.style.background=c.c;vcp.appendChild(tx("▶"));vcl.appendChild(vcp);
+    var vcr=mk("div","vcr");
+    var vct=mk("div","vct");vct.style.color=c.c;vct.appendChild(tx(v.tag));
+    var cb=mk("span","vcm");cb.appendChild(tx("MY ADD"));vct.appendChild(cb);
+    var vtitle=mk("div","vctitle");vtitle.appendChild(tx(v.t));
+    vcr.appendChild(vct);vcr.appendChild(vtitle);link.appendChild(vcl);link.appendChild(vcr);con.appendChild(link);
+  });
+  var ybtn2=mk("a","det-yt");ybtn2.style.margin="8px 18px 20px";
+  ybtn2.href=c.url;ybtn2.target="_blank";ybtn2.rel="noopener";
+  ybtn2.appendChild(tx("▶ See ALL "+c.n+" videos on YouTube"));con.appendChild(ybtn2);
+}
+
+function buildAllCh(){
+  var con=q("allChBody");con.innerHTML="";
+  [{k:"speech",l:"🌱 First Words and Speech"},{k:"signing",l:"🤟 Signing and AAC Communication"},
+   {k:"parent",l:"🎓 For Parents — Learn and Apply"},{k:"songs",l:"🎵 Songs and Music Therapy"},
+   {k:"social",l:"🧡 Social-Emotional and Regulation"},{k:"literacy",l:"🔠 Literacy and Cognitive"},
+   {k:"explore",l:"🌍 Exploration, Nature and Sensory"}].forEach(function(g){
+    var chs=bySec(g.k);if(!chs.length)return;
+    var hd=mk("div","ac-hd");hd.appendChild(tx(g.l));hd.appendChild(mk("div","ac-ln"));con.appendChild(hd);
+    var row=mk("div","row");row.style.paddingBottom="10px";
+    chs.forEach(function(c){row.appendChild(mkChCard(c))});con.appendChild(row);
+  });
+}
+
+function buildApps(){
+  var con=q("appsBody");
+  APPS.forEach(function(section){
+    var hd=mk("div","as-hd");hd.appendChild(tx(section.sec));hd.appendChild(mk("div","as-ln"));con.appendChild(hd);
+    section.items.forEach(function(a){
+      var item=mk("a","ai");item.href=a.u;item.target="_blank";item.rel="noopener";
+      var ico=mk("div","ai-ico");ico.appendChild(tx(a.i));
+      var right=mk("div");right.style.flex="1";
+      var nm=mk("div","ai-name");nm.appendChild(tx(a.n));
+      var by=mk("div","ai-by");by.style.color=(a.p[0]&&a.p[0][1])||"var(--teal)";by.appendChild(tx(a.b));
+      var desc=mk("div","ai-desc");desc.appendChild(tx(a.d));
+      var pills=mk("div","ai-pills");
+      a.p.forEach(function(pil){
+        var p=mk("span","pill");p.style.background=pil[1]+"22";p.style.color=pil[1];p.appendChild(tx(pil[0]));pills.appendChild(p);
+      });
+      right.appendChild(nm);right.appendChild(by);right.appendChild(desc);right.appendChild(pills);
+      item.appendChild(ico);item.appendChild(right);con.appendChild(item);
+    });
+  });
+}
+
+function buildTips(){
+  var con=q("tipsBody");
+  TIPS.forEach(function(t){
+    var card=mk("div","tc");
+    var num=mk("div","tn");num.appendChild(tx((t[0]<10?"0":"")+t[0]));
+    var body=mk("div");body.style.flex="1";
+    var title=mk("div","tt");title.appendChild(tx(t[1]));
+    var text=mk("div","tb");text.appendChild(tx(t[2]));
+    body.appendChild(title);body.appendChild(text);
+    card.appendChild(num);card.appendChild(body);con.appendChild(card);
+  });
+}
+
+function openModal(chId){
+  var sel=q("addCh");sel.innerHTML="";
+  CH.forEach(function(c){
+    var opt=document.createElement("option");
+    opt.value=c.id;opt.textContent=c.e+" "+c.n;
+    if(c.id===chId)opt.selected=true;
+    sel.appendChild(opt);
+  });
+  q("addTitle").value="";q("addTag").value="";
+  q("addModal").classList.add("on");
+}
+function closeModal(){q("addModal").classList.remove("on")}
+function saveVid(){
+  var chId=q("addCh").value;
+  var title=q("addTitle").value.trim();
+  var tag=q("addTag").value.trim()||"Video";
+  if(!title){alert("Please enter a video title");return}
+  var custom=loadC();if(!custom[chId])custom[chId]=[];
+  custom[chId].push({t:title,tag:tag});saveC(custom);
+  closeModal();if(curDet===chId)buildDet(chId);
+}
+
+buildHome();buildAllCh();buildApps();buildTips();
+
+</script></body></html>
